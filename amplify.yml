@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - echo "Installing dependencies..."
+        - cd frontend
+        - echo "No dependencies to install for static site"
+    build:
+      commands:
+        - echo "Building static site..."
+        - echo "Static files are ready for deployment"
+  artifacts:
+    baseDirectory: frontend
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - frontend/**/*

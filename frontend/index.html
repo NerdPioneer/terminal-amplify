@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal Journal | NerdPioneer Portfolio</title>
+    <meta name="description" content="Interactive terminal interface showcasing my cloud computing journey. A modern portfolio experience built with AWS serverless architecture.">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <i class="fas fa-terminal"></i>
+                <span>NerdPioneer</span>
+                <span class="brand-separator">·</span>
+                <span class="brand-subtitle">Terminal</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-file-code"></i>
+                    <span>Logs</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-user"></i>
+                    <span>About</span>
+                </a>
+                <a href="https://1percentnerd.com" class="nav-link" target="_blank" rel="noopener">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>Portfolio</span>
+                </a>
+            </div>
+            <div class="nav-controls">
+                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="fullscreen-toggle" id="fullscreenToggle" title="Toggle fullscreen">
+                    <i class="fas fa-expand"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Terminal Window -->
+        <div class="terminal-window" id="terminalWindow">
+            <!-- Terminal Header -->
+            <div class="terminal-header">
+                <div class="terminal-controls">
+                    <button class="control-btn close" title="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <button class="control-btn minimize" title="Minimize">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button class="control-btn maximize" title="Maximize">
+                        <i class="fas fa-square"></i>
+                    </button>
+                </div>
+                <div class="terminal-title">
+                    <i class="fas fa-code"></i>
+                    <span>terminal-journal@nerdpioneer</span>
+                </div>
+                <div class="terminal-status">
+                    <div class="status-indicator online">
+                        <div class="pulse-dot"></div>
+                        <span>ONLINE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Body -->
+            <div class="terminal-body">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <div class="ascii-art">
+                        <pre>
+    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
+    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
+       ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
+       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
+       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
+       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+                        </pre>
+                    </div>
+                    <div class="welcome-text">
+                        <h1>Welcome to NerdPioneer Terminal</h1>
+                        <p>Interactive journey through my cloud computing and cybersecurity learning path</p>
+                        <div class="tech-stack" id="techStack">
+                            <!-- Tech badges will be dynamically added based on detected log types -->
+                        </div>
+                        <div class="portfolio-link">
+                            <a href="https://1percentnerd.com" target="_blank" rel="noopener" class="portfolio-btn">
+                                <i class="fas fa-external-link-alt"></i>
+                                <span>View Full Portfolio</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Command Interface -->
+                <div class="command-interface">
+                    <div class="command-history" id="commandHistory">
+                        <!-- Commands will be dynamically added here -->
+                    </div>
+                    
+                    <div class="command-input-container">
+                        <div class="prompt-display">
+                            <span class="user">user@terminal</span>
+                            <span class="path">~/journey</span>
+                            <span class="symbol">$</span>
+                        </div>
+                        <div class="input-line">
+                            <input type="text" id="commandInput" placeholder="Type a command..." autocomplete="off" spellcheck="false">
+                            <div class="cursor" id="cursor"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <button class="action-btn" data-command="help">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Help</span>
+                    </button>
+                    <button class="action-btn" data-command="logs">
+                        <i class="fas fa-list"></i>
+                        <span>View Logs</span>
+                    </button>
+                    <button class="action-btn" data-command="about">
+                        <i class="fas fa-info-circle"></i>
+                        <span>About</span>
+                    </button>
+                    <button class="action-btn" data-command="clear">
+                        <i class="fas fa-broom"></i>
+                        <span>Clear</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar (Hidden by default) -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>Quick Access</h3>
+                <button class="sidebar-close" id="sidebarClose" title="Close sidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <div class="log-preview">
+                    <h4>Recent Logs</h4>
+                    <div class="log-items" id="logItems">
+                        <!-- Log items will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Initializing terminal...</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>

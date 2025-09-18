@@ -1,0 +1,46 @@
+name: Deploy Terminal Journal
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+        cache-dependency-path: lambda/package.json
+        
+    - name: Install Lambda dependencies
+      run: |
+        cd lambda
+        npm ci
+        
+    - name: Package Lambda function
+      run: |
+        cd lambda
+        zip -r ../function.zip . -x node_modules/aws-sdk/*
+        
+    - name: Deploy to AWS (placeholder)
+      run: |
+        echo "Deployment to AWS would happen here"
+        echo "This would typically involve:"
+        echo "- Uploading Lambda function to S3"
+        echo "- Updating Lambda function code"
+        echo "- Deploying frontend to Amplify"
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: lambda-function
+        path: function.zip

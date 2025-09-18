@@ -1,0 +1,27 @@
+{
+  "name": "terminal-journal-metadata-generator",
+  "version": "1.0.0",
+  "description": "AWS Lambda function to generate metadata.json from Markdown logs in S3",
+  "main": "generateMetadata.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "zip -r function.zip . -x node_modules/aws-sdk/*"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.1691.0"
+  },
+  "devDependencies": {},
+  "keywords": [
+    "aws",
+    "lambda",
+    "s3",
+    "metadata",
+    "markdown",
+    "serverless"
+  ],
+  "author": "Terminal Journal Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
