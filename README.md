@@ -21,9 +21,11 @@ This terminal-style interface makes my learning journey feel more authentic and 
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 
 ### Behind the Scenes
-- **Cloud Storage**: My learning logs are stored securely in the cloud
-- **Automatic Updates**: When I add new learning entries, the system automatically updates the interface
+- **Cloud Storage**: My learning logs are stored securely in Amazon S3 with encryption
+- **Automatic Processing**: AWS Lambda automatically processes new entries and updates metadata
 - **Smart Organization**: The system categorizes my skills and projects based on what I'm learning
+- **Secure Access**: S3 signed URLs ensure only authorized users can access private content
+- **Global Delivery**: CloudFront CDN makes the site fast worldwide
 
 ### Why This Approach?
 I chose to build this as a web application because:
@@ -31,6 +33,32 @@ I chose to build this as a web application because:
 - **Real-world Skills**: I'm learning cloud platforms, automation, and web development
 - **Portfolio Building**: It demonstrates my technical abilities to potential employers
 - **Scalability**: As I learn more, the system can grow with my knowledge
+
+## 🔒 AWS Backend & Security
+
+This project will be powered by Amazon Web Services (AWS) to provide enterprise-grade security and scalability:
+
+### Planned AWS Architecture
+- **AWS Amplify**: Hosts the frontend website with automatic deployments
+- **AWS Lambda**: Processes and organizes my learning logs automatically
+- **Amazon S3**: Securely stores my learning journal files and metadata
+- **S3 Signed URLs**: Provides secure, time-limited access to private content
+- **AWS IAM**: Manages permissions and access control
+- **CloudFront CDN**: Delivers content fast and securely worldwide
+
+### Security Features
+- **Encrypted Storage**: All files encrypted at rest in S3
+- **Secure Access**: Signed URLs prevent unauthorized access to private content
+- **Role-Based Permissions**: Lambda functions have minimal required permissions
+- **HTTPS Everywhere**: All traffic encrypted in transit
+- **Regular Backups**: Automated backups of all learning data
+
+### Why AWS?
+- **Industry Standard**: Most companies use AWS, so I'm learning real-world skills
+- **Security First**: AWS provides enterprise-grade security features
+- **Cost Effective**: Pay only for what I use as a student
+- **Scalable**: Can handle growth from personal project to professional portfolio
+- **Learning Opportunity**: Hands-on experience with cloud security and architecture
 
 ## 📁 What's Inside
 
@@ -71,6 +99,26 @@ I update this project by:
 1. Adding new learning entries to the `logs/` folder
 2. The system automatically organizes and displays them
 3. I can track my progress and share my journey with others
+
+## 🚧 Development Status
+
+**Current Phase**: Frontend Development Complete ✅
+- Interactive terminal interface is fully functional
+- All commands and features are working
+- Responsive design works on all devices
+
+**Next Phase**: AWS Backend Integration 🔄
+- Setting up AWS Amplify for hosting
+- Configuring S3 for secure file storage
+- Implementing Lambda functions for automation
+- Adding S3 signed URLs for private content access
+- Setting up CloudFront for global content delivery
+
+**Future Enhancements**: 📋
+- Real-time log processing with EventBridge
+- Advanced security features and monitoring
+- Integration with learning management systems
+- Mobile app version
 
 ## 📝 My Learning Journal Format
 
