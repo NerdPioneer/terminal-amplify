@@ -9,7 +9,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Source+Code+Pro:wght@100;200;300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <!-- Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -18,46 +18,13 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-brand">
-                <i class="fas fa-terminal"></i>
-                <span>Terminal</span>
-            </div>
-            <div class="nav-links">
-                <a href="#" class="nav-link active">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
-                </a>
-                <a href="#" class="nav-link">
-                    <i class="fas fa-file-code"></i>
-                    <span>Logs</span>
-                </a>
-                <a href="#" class="nav-link">
-                    <i class="fas fa-user"></i>
-                    <span>About</span>
-                </a>
-                <a href="https://1percentnerd.com" class="nav-link" target="_blank" rel="noopener">
-                    <i class="fas fa-external-link-alt"></i>
-                    <span>Portfolio</span>
-                </a>
-            </div>
-            <div class="nav-controls">
-                <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <button class="fullscreen-toggle" id="fullscreenToggle" title="Toggle fullscreen">
-                    <i class="fas fa-expand"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
 
     <!-- Main Container -->
     <div class="container">
-        <!-- Terminal Window -->
-        <div class="terminal-window" id="terminalWindow">
+        <!-- Terminal and Logs Section -->
+        <div class="main-content">
+            <!-- Terminal Window -->
+            <div class="terminal-window" id="terminalWindow">
             <!-- Terminal Header -->
             <div class="terminal-header">
                 <div class="terminal-controls">
@@ -72,45 +39,27 @@
                     </button>
                 </div>
                 <div class="terminal-title">
-                    <i class="fas fa-code"></i>
-                    <span>terminal@system</span>
+                    <span>TERMINAL@SYSTEM</span>
                 </div>
                 <div class="terminal-status">
                     <div class="status-indicator online">
                         <div class="pulse-dot"></div>
                         <span>ONLINE</span>
                     </div>
+                    <div class="terminal-controls-right">
+                        <button class="control-btn-small" id="themeToggle" title="Toggle theme">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                        <button class="control-btn-small" id="fullscreenToggle" title="Toggle fullscreen">
+                            <i class="fas fa-expand"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
 
+
             <!-- Terminal Body -->
             <div class="terminal-body">
-                <!-- Welcome Section -->
-                <div class="welcome-section">
-                    <div class="ascii-art">
-                        <pre>
-    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
-    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
-       ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
-       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
-       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
-       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
-                        </pre>
-                    </div>
-                    <div class="welcome-text">
-                        <h1>Welcome to Terminal</h1>
-                        <p>Interactive journey through cloud computing and cybersecurity learning path</p>
-                        <div class="tech-stack" id="techStack">
-                            <!-- Tech badges will be dynamically added based on detected log types -->
-                        </div>
-                        <div class="portfolio-link">
-                            <a href="https://1percentnerd.com" target="_blank" rel="noopener" class="portfolio-btn">
-                                <i class="fas fa-external-link-alt"></i>
-                                <span>View Full Portfolio</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- Command Interface -->
                 <div class="command-interface">
@@ -141,9 +90,9 @@
                         <i class="fas fa-list"></i>
                         <span>View Logs</span>
                     </button>
-                    <button class="action-btn" data-command="about">
-                        <i class="fas fa-info-circle"></i>
-                        <span>About</span>
+                    <button class="action-btn" data-command="projects">
+                        <i class="fas fa-project-diagram"></i>
+                        <span>Projects</span>
                     </button>
                     <button class="action-btn" data-command="clear">
                         <i class="fas fa-broom"></i>
@@ -153,18 +102,40 @@
             </div>
         </div>
 
-        <!-- Right Sidebar for Log Previews -->
-        <div class="right-sidebar" id="rightSidebar">
-            <div class="sidebar-header">
+        <!-- Log Files Panel -->
+        <div class="log-files-panel" id="logFilesPanel">
+            <div class="log-files-header">
                 <h3>Log Files</h3>
-                <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
+                <div class="log-entry-count" id="logEntryCount">[3 entries]</div>
             </div>
             <div class="log-files-list" id="logFilesList">
                 <!-- Log files will be populated here -->
             </div>
         </div>
+        </div>
+
+        <!-- Navigation Section -->
+        <div class="navigation-section">
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-command="home">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </button>
+                <button class="nav-btn" data-command="logs">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Logs</span>
+                </button>
+                <button class="nav-btn" data-command="projects">
+                    <i class="fas fa-project-diagram"></i>
+                    <span>Projects</span>
+                </button>
+                <a href="https://1percentnerd.com" class="nav-btn external" target="_blank" rel="noopener">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span>Portfolio</span>
+                </a>
+            </div>
+        </div>
+
 
     </div>
 

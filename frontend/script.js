@@ -6,9 +6,7 @@ class TerminalJournal {
         this.historyIndex = -1;
         this.currentTheme = 'dark';
         this.isFullscreen = false;
-        this.detectedTechStack = new Set();
         this.currentLogFile = null;
-        this.sidebarCollapsed = false;
         
         this.init();
     }
@@ -33,12 +31,12 @@ class TerminalJournal {
             });
         });
 
-        // Theme toggle
+        // Theme toggle (now in left controls)
         document.getElementById('themeToggle').addEventListener('click', () => {
             this.toggleTheme();
         });
 
-        // Fullscreen toggle
+        // Fullscreen toggle (now in left controls)
         document.getElementById('fullscreenToggle').addEventListener('click', () => {
             this.toggleFullscreen();
         });
@@ -51,27 +49,38 @@ class TerminalJournal {
             });
         });
 
-        // Navigation links
-        document.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', (e) => {
+        // Navigation buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
                 e.preventDefault();
-                const command = link.querySelector('span').textContent.toLowerCase();
-                this.executeCommand(command);
+                const command = btn.dataset.command;
+                if (command) {
+                    this.executeCommand(command);
+                    this.updateActiveNavButton(btn);
+                }
             });
         });
 
-        // Sidebar toggle
-        document.getElementById('sidebarToggle').addEventListener('click', () => {
-            this.toggleSidebar();
+        // Mobile log panel toggle
+        document.addEventListener('click', (e) => {
+            if (e.target.closest('.log-files-header::after') || e.target.textContent === '✕') {
+                this.toggleLogPanel();
+            }
         });
+
+        // Add mobile menu button for logs
+        this.addMobileLogButton();
+
     }
 
     initializeTerminal() {
-        // Add welcome message
-        this.addCommandOutput('system', 'NerdPioneer Terminal initialized');
-        this.addCommandOutput('system', 'Type "help" for available commands');
-        this.addCommandOutput('info', 'Welcome to my learning journey terminal!');
-        this.addCommandOutput('info', 'Explore my cloud computing and cybersecurity path');
+        // Add authentic terminal startup sequence
+        this.addCommandOutput('system', 'NerdPioneer Terminal v3.0 - Initializing...');
+        this.addCommandOutput('system', 'Loading configuration...');
+        this.addCommandOutput('system', 'Mounting file systems...');
+        this.addCommandOutput('system', 'Starting services...');
+        this.addCommandOutput('success', 'Terminal ready. Type "help" for available commands.');
+        this.addCommandOutput('info', 'Connected to learning-journey@terminal-amplify');
         
         // Focus input
         document.getElementById('commandInput').focus();
@@ -142,13 +151,7 @@ class TerminalJournal {
             case 'ls':
                 return {
                     type: 'logs',
-                    content: this.getLogsContent()
-                };
-            case 'about':
-            case 'whoami':
-                return {
-                    type: 'about',
-                    content: this.getAboutContent()
+                    content: this.getLogsListContent()
                 };
             case 'rss':
             case 'feed':
@@ -206,12 +209,6 @@ class TerminalJournal {
                     type: 'joke',
                     content: this.getJokeContent()
                 };
-            case 'skills':
-            case 'tech':
-                return {
-                    type: 'skills',
-                    content: this.getSkillsContent()
-                };
             case 'projects':
             case 'proj':
                 return {
@@ -236,10 +233,26 @@ class TerminalJournal {
                     content: this.getTreeContent()
                 };
             case 'cat':
-                return {
-                    type: 'error',
-                    content: 'Usage: cat <filename> - Display file contents. Try clicking on a log file in the sidebar.'
-                };
+                const filename = command.split(' ')[1];
+                if (filename) {
+                    const logFile = this.findLogFile(filename);
+                    if (logFile) {
+                        return {
+                            type: 'info',
+                            content: this.formatLogContent(logFile.content)
+                        };
+                    } else {
+                        return {
+                            type: 'error',
+                            content: `cat: ${filename}: No such file or directory`
+                        };
+                    }
+                } else {
+                    return {
+                        type: 'error',
+                        content: 'Usage: cat <filename> - Display file contents'
+                    };
+                }
             case 'pwd':
                 return {
                     type: 'info',
@@ -286,8 +299,41 @@ class TerminalJournal {
         const output = document.createElement('div');
         output.className = `command-output ${type} fade-in`;
         
-        output.innerHTML = `<div class="output-content">${content}</div>`;
+        // Add typing animation for terminal output
+        this.typeText(output, content, type);
         history.appendChild(output);
+    }
+
+    typeText(element, text, type) {
+        const outputContent = document.createElement('div');
+        outputContent.className = 'output-content';
+        element.appendChild(outputContent);
+        
+        let i = 0;
+        const typingSpeed = type === 'system' ? 20 : 30; // Faster for system messages
+        
+        const typeChar = () => {
+            if (i < text.length) {
+                outputContent.innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeChar, typingSpeed);
+            } else {
+                // Add cursor blink effect at the end
+                const cursor = document.createElement('span');
+                cursor.className = 'typing-cursor';
+                cursor.textContent = '█';
+                outputContent.appendChild(cursor);
+                
+                // Remove cursor after a delay
+                setTimeout(() => {
+                    if (cursor.parentNode) {
+                        cursor.parentNode.removeChild(cursor);
+                    }
+                }, 1000);
+            }
+        };
+        
+        typeChar();
     }
 
     getHelpContent() {
@@ -319,8 +365,6 @@ class TerminalJournal {
                 <div class="help-section">
                     <h4>Information</h4>
                     <ul>
-                        <li><strong>about/whoami</strong> - About this project</li>
-                        <li><strong>skills/tech</strong> - Technical skills</li>
                         <li><strong>projects/proj</strong> - Current projects</li>
                         <li><strong>contact/social</strong> - Contact information</li>
                         <li><strong>rss/feed</strong> - RSS feed information</li>
@@ -382,26 +426,6 @@ class TerminalJournal {
         `;
     }
 
-    getAboutContent() {
-        return `
-            <h3>About NerdPioneer Terminal</h3>
-            <p><strong>Developer:</strong> Ezekiel Obeisun Jr</p>
-            <p><strong>Education:</strong> Cloud Computing Student @ Western Governors University</p>
-            <p><strong>Focus:</strong> Cybersecurity + Network Engineering — building toward Defense Sector</p>
-            <p><strong>Core Skills:</strong></p>
-            <ul>
-                <li>AWS, Azure, & Hybrid Cloud Infrastructure</li>
-                <li>Cisco Networking (CCNA-level + labs in progress)</li>
-                <li>Linux Administration & Python Automation</li>
-                <li>Security Hardening (STIG, CIS Benchmarks)</li>
-                <li>Incident Response & Threat Analysis</li>
-            </ul>
-            <p><strong>Mindset:</strong> "Every log is a step forward. 1% better each day."</p>
-            <p><strong>Favorite Tool:</strong> tmux + coffee</p>
-            <p><strong>Currently Reading:</strong> "Atomic Habits" by James Clear</p>
-            <p><em>Visit <a href="https://1percentnerd.com" target="_blank" style="color: var(--text-accent);">1percentnerd.com</a> for my full portfolio</em></p>
-        `;
-    }
 
     getUptime() {
         const startTime = new Date(Date.now() - (this.commandHistory.length * 1000 * 60));
@@ -495,49 +519,6 @@ class TerminalJournal {
         `;
     }
 
-    getSkillsContent() {
-        return `
-            <h3>Technical Skills</h3>
-            <div class="skills-grid">
-                <div class="skill-category">
-                    <h4>Cloud Platforms</h4>
-                    <ul>
-                        <li>AWS (EC2, S3, Lambda, VPC, IAM)</li>
-                        <li>Azure (Virtual Machines, Storage, Functions)</li>
-                        <li>Google Cloud Platform</li>
-                        <li>Hybrid Cloud Solutions</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h4>Networking</h4>
-                    <ul>
-                        <li>Cisco CCNA (Routing & Switching)</li>
-                        <li>OSPF, EIGRP, BGP</li>
-                        <li>VLANs, STP, EtherChannel</li>
-                        <li>Network Security</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h4>Programming</h4>
-                    <ul>
-                        <li>Python (Automation, Scripting)</li>
-                        <li>JavaScript (Node.js, React)</li>
-                        <li>Bash/Shell Scripting</li>
-                        <li>PowerShell</li>
-                    </ul>
-                </div>
-                <div class="skill-category">
-                    <h4>Security</h4>
-                    <ul>
-                        <li>STIG Implementation</li>
-                        <li>CIS Benchmarks</li>
-                        <li>Incident Response</li>
-                        <li>Threat Analysis</li>
-                    </ul>
-                </div>
-            </div>
-        `;
-    }
 
     getProjectsContent() {
         return `
@@ -687,9 +668,9 @@ terminal-amplify/
 
     handleTabCompletion(input) {
         const commands = [
-            'help', 'clear', 'cls', 'logs', 'list', 'ls', 'about', 'whoami', 'rss', 'feed',
+            'help', 'clear', 'cls', 'logs', 'list', 'ls', 'rss', 'feed',
             'status', 'ps', 'theme', 'version', 'ver', 'date', 'time', 'uptime', 'neofetch',
-            'matrix', 'weather', 'joke', 'fun', 'skills', 'tech', 'projects', 'proj',
+            'matrix', 'weather', 'joke', 'fun', 'projects', 'proj',
             'contact', 'social', 'history', 'hist', 'tree', 'cat', 'pwd', 'who', 'uname', 'echo'
         ];
         const value = input.value.toLowerCase();
@@ -847,9 +828,25 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
                 this.currentLogFile = logFile;
             }
             
+            // Get icon based on log type
+            const getLogIcon = (tags) => {
+                if (tags.includes('#aws')) return '☁️';
+                if (tags.includes('#lambda')) return '⚡';
+                if (tags.includes('#amplify')) return '🚀';
+                if (tags.includes('#security')) return '🔒';
+                if (tags.includes('#networking')) return '🌐';
+                return '📝';
+            };
+            
             logFileItem.innerHTML = `
-                <div class="log-file-name">${logFile.name}</div>
-                <div class="log-file-date">${logFile.date}</div>
+                <div class="log-file-header">
+                    <span class="log-file-icon">${getLogIcon(logFile.tags)}</span>
+                    <div class="log-file-name">${logFile.name}</div>
+                    <div class="log-file-date">${logFile.date}</div>
+                </div>
+                <div class="log-file-tags">
+                    ${logFile.tags.map(tag => `<span class="log-file-tag">${tag.replace('#', '')}</span>`).join('')}
+                </div>
                 <div class="log-file-preview">${logFile.preview}</div>
             `;
             
@@ -858,13 +855,7 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
             });
             
             logFilesList.appendChild(logFileItem);
-            
-            // Detect tech stack from tags
-            this.detectTechStack(logFile.tags);
         });
-        
-        // Update tech stack display
-        this.updateTechStackDisplay();
     }
 
     hideLoadingOverlay() {
@@ -882,40 +873,6 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
         history.scrollTop = history.scrollHeight;
     }
 
-    detectTechStack(tags) {
-        const techMapping = {
-            '#azure': 'Azure',
-            '#gcp': 'GCP',
-            '#python': 'Python',
-            '#docker': 'Docker',
-            '#kubernetes': 'Kubernetes',
-            '#terraform': 'Terraform',
-            '#ansible': 'Ansible'
-        };
-
-        tags.forEach(tag => {
-            const tech = techMapping[tag.toLowerCase()];
-            if (tech) {
-                this.detectedTechStack.add(tech);
-            }
-        });
-    }
-
-    updateTechStackDisplay() {
-        const techStack = document.getElementById('techStack');
-        techStack.innerHTML = '';
-
-        if (this.detectedTechStack.size === 0) {
-            return;
-        }
-
-        Array.from(this.detectedTechStack).forEach(tech => {
-            const badge = document.createElement('span');
-            badge.className = 'tech-badge';
-            badge.textContent = tech;
-            techStack.appendChild(badge);
-        });
-    }
 
     selectLogFile(logFile, logFileItem) {
         // Remove active class from all log file items
@@ -958,15 +915,149 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
             .replace(/\n/g, '<br>');
     }
 
-    toggleSidebar() {
-        const sidebar = document.getElementById('rightSidebar');
-        this.sidebarCollapsed = !this.sidebarCollapsed;
+
+    updateActiveNavButton(activeBtn) {
+        // Remove active class from all nav buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
         
-        if (this.sidebarCollapsed) {
-            sidebar.classList.add('collapsed');
-        } else {
-            sidebar.classList.remove('collapsed');
+        // Add active class to clicked button
+        activeBtn.classList.add('active');
+    }
+
+    findLogFile(filename) {
+        const logFiles = [
+            {
+                name: 'vpc-setup.md',
+                date: '2025-09-01',
+                content: `# VPC Setup Log - 2025-09-01
+
+## Overview
+Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
+
+## Architecture
+- **VPC CIDR**: 10.0.0.0/16
+- **Public Subnets**: 10.0.1.0/24, 10.0.2.0/24
+- **Private Subnets**: 10.0.10.0/24, 10.0.20.0/24
+- **Availability Zones**: us-east-1a, us-east-1b
+
+## Security Groups
+- **Web Tier**: Allow HTTP/HTTPS from internet
+- **App Tier**: Allow traffic from Web Tier only
+- **DB Tier**: Allow traffic from App Tier only
+
+## Next Steps
+- Configure NAT Gateway for private subnet internet access
+- Set up VPC endpoints for S3 access
+- Implement VPC Flow Logs for monitoring`,
+                tags: ['#aws', '#vpc', '#networking', '#security']
+            },
+            {
+                name: 'lambda-deployment.md',
+                date: '2025-09-02',
+                content: `# Lambda Deployment Log - 2025-09-02
+
+## Functions Deployed
+1. **generateMetadata.js** - Processes log files and generates metadata
+2. **updateIndex.js** - Updates the main index file
+
+## Configuration
+- **Runtime**: Node.js 18.x
+- **Memory**: 256MB
+- **Timeout**: 30 seconds
+- **Environment Variables**:
+  - S3_BUCKET: terminal-logs-bucket
+  - REGION: us-east-1
+
+## EventBridge Rules
+- Trigger on S3 object creation
+- Filter for .md files in logs/ prefix
+- Target: generateMetadata function
+
+## Testing
+- ✅ S3 upload triggers Lambda
+- ✅ Metadata generation works
+- ✅ Error handling implemented`,
+                tags: ['#aws', '#lambda', '#serverless', '#automation']
+            },
+            {
+                name: 'amplify-setup.md',
+                date: '2025-09-03',
+                content: `# Amplify Setup Log - 2025-09-03
+
+## Frontend Hosting
+- **Framework**: Static HTML/CSS/JS
+- **Build Command**: npm run build
+- **Publish Directory**: frontend/
+- **Custom Domain**: terminal.1percentnerd.com
+
+## CI/CD Pipeline
+- **Source**: GitHub repository
+- **Branch**: main
+- **Build Spec**: amplify.yml
+- **Auto Deploy**: Enabled
+
+## Environment Variables
+- **NODE_ENV**: production
+- **API_ENDPOINT**: https://api.terminal.1percentnerd.com
+
+## Performance
+- **CDN**: CloudFront distribution
+- **Caching**: 24 hours for static assets
+- **Compression**: Gzip enabled
+
+## Security
+- **HTTPS**: SSL certificate from ACM
+- **Headers**: Security headers configured
+- **CORS**: Properly configured for API access`,
+                tags: ['#aws', '#amplify', '#frontend', '#cicd']
+            }
+        ];
+        
+        return logFiles.find(file => file.name === filename);
+    }
+
+    getLogsListContent() {
+        const logFiles = [
+            { name: 'vpc-setup.md', size: '2.1K', modified: '2025-09-01' },
+            { name: 'lambda-deployment.md', size: '1.8K', modified: '2025-09-02' },
+            { name: 'amplify-setup.md', size: '2.3K', modified: '2025-09-03' }
+        ];
+        
+        let content = '<h3>Log Files Directory</h3><pre>';
+        content += 'total ' + logFiles.length + '\n';
+        content += 'drwxr-xr-x 3 user user 4096 Sep 18 10:32 .\n';
+        content += 'drwxr-xr-x 5 user user 4096 Sep 18 10:32 ..\n';
+        
+        logFiles.forEach(file => {
+            content += `-rw-r--r-- 1 user user ${file.size} ${file.modified} ${file.name}\n`;
+        });
+        
+        content += '</pre>';
+        content += '<p><em>Use "cat &lt;filename&gt;" to view file contents</em></p>';
+        
+        return content;
+    }
+
+    addMobileLogButton() {
+        // Only add on mobile
+        if (window.innerWidth <= 768) {
+            const terminalHeader = document.querySelector('.terminal-header');
+            const mobileLogBtn = document.createElement('button');
+            mobileLogBtn.className = 'mobile-log-btn';
+            mobileLogBtn.innerHTML = '<i class="fas fa-list"></i>';
+            mobileLogBtn.title = 'Toggle Log Files';
+            mobileLogBtn.addEventListener('click', () => this.toggleLogPanel());
+            
+            const terminalStatus = document.querySelector('.terminal-status');
+            terminalStatus.appendChild(mobileLogBtn);
         }
+    }
+
+    toggleLogPanel() {
+        const logPanel = document.getElementById('logFilesPanel');
+        logPanel.classList.toggle('open');
     }
 }
 
