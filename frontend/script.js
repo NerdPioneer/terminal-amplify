@@ -7,6 +7,8 @@ class TerminalJournal {
         this.currentTheme = 'dark';
         this.isFullscreen = false;
         this.detectedTechStack = new Set();
+        this.currentLogFile = null;
+        this.sidebarCollapsed = false;
         
         this.init();
     }
@@ -56,6 +58,11 @@ class TerminalJournal {
                 const command = link.querySelector('span').textContent.toLowerCase();
                 this.executeCommand(command);
             });
+        });
+
+        // Sidebar toggle
+        document.getElementById('sidebarToggle').addEventListener('click', () => {
+            this.toggleSidebar();
         });
     }
 
@@ -127,15 +134,18 @@ class TerminalJournal {
                     content: this.getHelpContent()
                 };
             case 'clear':
+            case 'cls':
                 this.clearTerminal();
                 return null;
             case 'logs':
             case 'list':
+            case 'ls':
                 return {
                     type: 'logs',
                     content: this.getLogsContent()
                 };
             case 'about':
+            case 'whoami':
                 return {
                     type: 'about',
                     content: this.getAboutContent()
@@ -153,14 +163,102 @@ class TerminalJournal {
                     content: `Theme switched to ${this.currentTheme} mode`
                 };
             case 'status':
+            case 'ps':
                 return {
                     type: 'status',
                     content: this.getStatusContent()
                 };
             case 'version':
+            case 'ver':
                 return {
                     type: 'info',
                     content: 'Terminal Journal v3.0 - Modern Web Terminal Interface'
+                };
+            case 'date':
+            case 'time':
+                return {
+                    type: 'info',
+                    content: `Current time: ${new Date().toLocaleString()}`
+                };
+            case 'uptime':
+                return {
+                    type: 'info',
+                    content: `System uptime: ${this.getUptime()}`
+                };
+            case 'neofetch':
+                return {
+                    type: 'neofetch',
+                    content: this.getNeofetchContent()
+                };
+            case 'matrix':
+                return {
+                    type: 'matrix',
+                    content: this.getMatrixContent()
+                };
+            case 'weather':
+                return {
+                    type: 'weather',
+                    content: this.getWeatherContent()
+                };
+            case 'joke':
+            case 'fun':
+                return {
+                    type: 'joke',
+                    content: this.getJokeContent()
+                };
+            case 'skills':
+            case 'tech':
+                return {
+                    type: 'skills',
+                    content: this.getSkillsContent()
+                };
+            case 'projects':
+            case 'proj':
+                return {
+                    type: 'projects',
+                    content: this.getProjectsContent()
+                };
+            case 'contact':
+            case 'social':
+                return {
+                    type: 'contact',
+                    content: this.getContactContent()
+                };
+            case 'history':
+            case 'hist':
+                return {
+                    type: 'history',
+                    content: this.getHistoryContent()
+                };
+            case 'tree':
+                return {
+                    type: 'tree',
+                    content: this.getTreeContent()
+                };
+            case 'cat':
+                return {
+                    type: 'error',
+                    content: 'Usage: cat <filename> - Display file contents. Try clicking on a log file in the sidebar.'
+                };
+            case 'pwd':
+                return {
+                    type: 'info',
+                    content: '/home/user/terminal-journal'
+                };
+            case 'who':
+                return {
+                    type: 'info',
+                    content: 'user     pts/0        ' + new Date().toLocaleString() + ' (terminal)'
+                };
+            case 'uname':
+                return {
+                    type: 'info',
+                    content: 'TerminalOS 1.0.0 x86_64'
+                };
+            case 'echo':
+                return {
+                    type: 'info',
+                    content: command.substring(5).trim() || 'echo: missing operand'
                 };
             default:
                 return {
@@ -195,16 +293,57 @@ class TerminalJournal {
     getHelpContent() {
         return `
             <h3>Available Commands:</h3>
-            <ul>
-                <li><strong>help</strong> - Show this help message</li>
-                <li><strong>clear</strong> - Clear terminal screen</li>
-                <li><strong>logs</strong> - View journey logs</li>
-                <li><strong>about</strong> - About this project</li>
-                <li><strong>rss</strong> - RSS feed information</li>
-                <li><strong>status</strong> - System status</li>
-                <li><strong>theme</strong> - Toggle dark/light theme</li>
-                <li><strong>version</strong> - Show version information</li>
-            </ul>
+            <div class="help-sections">
+                <div class="help-section">
+                    <h4>System Commands</h4>
+                    <ul>
+                        <li><strong>help</strong> - Show this help message</li>
+                        <li><strong>clear/cls</strong> - Clear terminal screen</li>
+                        <li><strong>status/ps</strong> - System status</li>
+                        <li><strong>uptime</strong> - System uptime</li>
+                        <li><strong>date/time</strong> - Current date and time</li>
+                        <li><strong>who</strong> - Show who is logged in</li>
+                        <li><strong>uname</strong> - System information</li>
+                        <li><strong>pwd</strong> - Print working directory</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h4>File & Content</h4>
+                    <ul>
+                        <li><strong>logs/ls/list</strong> - View journey logs</li>
+                        <li><strong>tree</strong> - Display directory structure</li>
+                        <li><strong>cat</strong> - Display file contents</li>
+                        <li><strong>history/hist</strong> - Command history</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><strong>about/whoami</strong> - About this project</li>
+                        <li><strong>skills/tech</strong> - Technical skills</li>
+                        <li><strong>projects/proj</strong> - Current projects</li>
+                        <li><strong>contact/social</strong> - Contact information</li>
+                        <li><strong>rss/feed</strong> - RSS feed information</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h4>Fun & Interactive</h4>
+                    <ul>
+                        <li><strong>neofetch</strong> - System information display</li>
+                        <li><strong>matrix</strong> - Matrix-style animation</li>
+                        <li><strong>weather</strong> - Weather information</li>
+                        <li><strong>joke/fun</strong> - Random joke</li>
+                        <li><strong>echo</strong> - Display text</li>
+                    </ul>
+                </div>
+                <div class="help-section">
+                    <h4>Settings</h4>
+                    <ul>
+                        <li><strong>theme</strong> - Toggle dark/light theme</li>
+                        <li><strong>version/ver</strong> - Show version information</li>
+                    </ul>
+                </div>
+            </div>
             <p><em>Use Tab for command completion and arrow keys for command history.</em></p>
         `;
     }
@@ -264,6 +403,241 @@ class TerminalJournal {
         `;
     }
 
+    getUptime() {
+        const startTime = new Date(Date.now() - (this.commandHistory.length * 1000 * 60));
+        const uptime = Math.floor((Date.now() - startTime.getTime()) / 1000);
+        const hours = Math.floor(uptime / 3600);
+        const minutes = Math.floor((uptime % 3600) / 60);
+        const seconds = uptime % 60;
+        return `${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    getNeofetchContent() {
+        return `
+            <div class="neofetch">
+                <div class="neofetch-left">
+                    <pre>
+    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
+    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
+       ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
+       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
+       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
+       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
+                    </pre>
+                </div>
+                <div class="neofetch-right">
+                    <p><strong>OS:</strong> TerminalOS 1.0.0 x86_64</p>
+                    <p><strong>Host:</strong> terminal-amplify</p>
+                    <p><strong>Kernel:</strong> 5.4.0-74-generic</p>
+                    <p><strong>Uptime:</strong> ${this.getUptime()}</p>
+                    <p><strong>Shell:</strong> Terminal Journal v3.0</p>
+                    <p><strong>Theme:</strong> ${this.currentTheme}</p>
+                    <p><strong>Terminal:</strong> Web Terminal</p>
+                    <p><strong>CPU:</strong> Intel i7-12700K</p>
+                    <p><strong>Memory:</strong> 32GB DDR4</p>
+                    <p><strong>GPU:</strong> RTX 3080</p>
+                </div>
+            </div>
+        `;
+    }
+
+    getMatrixContent() {
+        return `
+            <div class="matrix-container">
+                <pre class="matrix-text">
+01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
+                </pre>
+                <p><em>Matrix mode activated! Welcome to the digital realm.</em></p>
+            </div>
+        `;
+    }
+
+    getWeatherContent() {
+        const weatherData = [
+            "☀️ Sunny - 72°F (22°C) - Perfect for coding!",
+            "⛅ Partly Cloudy - 68°F (20°C) - Great weather for learning",
+            "🌧️ Light Rain - 65°F (18°C) - Cozy indoor study weather",
+            "❄️ Snow - 32°F (0°C) - Hot coffee and terminal time",
+            "🌤️ Clear - 75°F (24°C) - Ideal for cloud computing studies"
+        ];
+        const randomWeather = weatherData[Math.floor(Math.random() * weatherData.length)];
+        return `
+            <h3>Current Weather</h3>
+            <p><strong>Location:</strong> Terminal City</p>
+            <p><strong>Condition:</strong> ${randomWeather}</p>
+            <p><strong>Humidity:</strong> 45%</p>
+            <p><strong>Wind:</strong> 5 mph NW</p>
+            <p><strong>Visibility:</strong> 10 miles</p>
+            <p><em>Weather data simulated for terminal environment</em></p>
+        `;
+    }
+
+    getJokeContent() {
+        const jokes = [
+            "Why do programmers prefer dark mode? Because light attracts bugs! 🐛",
+            "How many programmers does it take to change a light bulb? None, that's a hardware problem! 💡",
+            "Why don't programmers like nature? It has too many bugs! 🌿",
+            "What do you call a programmer from Finland? Nerdic! 🇫🇮",
+            "Why did the programmer quit his job? He didn't get arrays! 📊",
+            "What's a programmer's favorite hangout place? The Foo Bar! 🍺",
+            "Why do Java developers wear glasses? Because they can't C#! 👓",
+            "What do you call a programmer who doesn't comment their code? A silent partner! 🤐"
+        ];
+        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+        return `
+            <h3>Random Joke</h3>
+            <p>${randomJoke}</p>
+            <p><em>Type 'joke' for another one!</em></p>
+        `;
+    }
+
+    getSkillsContent() {
+        return `
+            <h3>Technical Skills</h3>
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h4>Cloud Platforms</h4>
+                    <ul>
+                        <li>AWS (EC2, S3, Lambda, VPC, IAM)</li>
+                        <li>Azure (Virtual Machines, Storage, Functions)</li>
+                        <li>Google Cloud Platform</li>
+                        <li>Hybrid Cloud Solutions</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h4>Networking</h4>
+                    <ul>
+                        <li>Cisco CCNA (Routing & Switching)</li>
+                        <li>OSPF, EIGRP, BGP</li>
+                        <li>VLANs, STP, EtherChannel</li>
+                        <li>Network Security</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h4>Programming</h4>
+                    <ul>
+                        <li>Python (Automation, Scripting)</li>
+                        <li>JavaScript (Node.js, React)</li>
+                        <li>Bash/Shell Scripting</li>
+                        <li>PowerShell</li>
+                    </ul>
+                </div>
+                <div class="skill-category">
+                    <h4>Security</h4>
+                    <ul>
+                        <li>STIG Implementation</li>
+                        <li>CIS Benchmarks</li>
+                        <li>Incident Response</li>
+                        <li>Threat Analysis</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+
+    getProjectsContent() {
+        return `
+            <h3>Current Projects</h3>
+            <div class="project-list">
+                <div class="project-item">
+                    <h4>Terminal Amplify</h4>
+                    <p>A serverless terminal portfolio built with AWS Amplify, S3, and Lambda</p>
+                    <p><strong>Tech Stack:</strong> AWS, JavaScript, HTML/CSS</p>
+                    <p><strong>Status:</strong> In Development</p>
+                </div>
+                <div class="project-item">
+                    <h4>Cloud Infrastructure Lab</h4>
+                    <p>Building scalable cloud infrastructure with Terraform and Ansible</p>
+                    <p><strong>Tech Stack:</strong> AWS, Terraform, Ansible, Docker</p>
+                    <p><strong>Status:</strong> Planning Phase</p>
+                </div>
+                <div class="project-item">
+                    <h4>Network Monitoring Tool</h4>
+                    <p>Python-based network monitoring and alerting system</p>
+                    <p><strong>Tech Stack:</strong> Python, SNMP, Grafana, InfluxDB</p>
+                    <p><strong>Status:</strong> Research Phase</p>
+                </div>
+            </div>
+        `;
+    }
+
+    getContactContent() {
+        return `
+            <h3>Contact Information</h3>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <strong>🌐 Website:</strong> <a href="https://1percentnerd.com" target="_blank" rel="noopener">1percentnerd.com</a>
+                </div>
+                <div class="contact-item">
+                    <strong>📧 Email:</strong> hello@1percentnerd.com
+                </div>
+                <div class="contact-item">
+                    <strong>💼 LinkedIn:</strong> <a href="https://linkedin.com/in/nerdpioneer" target="_blank" rel="noopener">linkedin.com/in/nerdpioneer</a>
+                </div>
+                <div class="contact-item">
+                    <strong>🐙 GitHub:</strong> <a href="https://github.com/NerdPioneer" target="_blank" rel="noopener">github.com/NerdPioneer</a>
+                </div>
+                <div class="contact-item">
+                    <strong>🐦 Twitter:</strong> <a href="https://twitter.com/nerdpioneer" target="_blank" rel="noopener">@nerdpioneer</a>
+                </div>
+            </div>
+        `;
+    }
+
+    getHistoryContent() {
+        if (this.commandHistory.length === 0) {
+            return '<p>No commands in history yet.</p>';
+        }
+        
+        let historyList = '<h3>Command History</h3><ul>';
+        this.commandHistory.slice(0, 20).forEach((cmd, index) => {
+            historyList += `<li>${index + 1}. ${cmd}</li>`;
+        });
+        historyList += '</ul>';
+        
+        if (this.commandHistory.length > 20) {
+            historyList += `<p><em>Showing last 20 commands. Total: ${this.commandHistory.length}</em></p>`;
+        }
+        
+        return historyList;
+    }
+
+    getTreeContent() {
+        return `
+            <h3>Directory Structure</h3>
+            <pre class="tree-structure">
+terminal-amplify/
+├── frontend/
+│   ├── index.html
+│   ├── styles.css
+│   └── script.js
+├── lambda/
+│   ├── generateMetadata.js
+│   └── package.json
+├── logs/
+│   ├── 2025-09-01-vpc.md
+│   ├── 2025-09-02-lambda-deployment.md
+│   └── 2025-09-03-amplify-setup.md
+├── src/
+│   ├── App.js
+│   ├── components/
+│   │   └── Terminal.jsx
+│   └── assets/
+│       ├── styles.css
+│       └── terminal.js
+├── public/
+│   └── index.html
+├── amplify.yml
+├── package.json
+└── README.md
+            </pre>
+        `;
+    }
+
     getRSSContent() {
         return `
             <h3>RSS Feed Information</h3>
@@ -312,7 +686,12 @@ class TerminalJournal {
     }
 
     handleTabCompletion(input) {
-        const commands = ['help', 'clear', 'logs', 'about', 'rss', 'status', 'theme', 'version'];
+        const commands = [
+            'help', 'clear', 'cls', 'logs', 'list', 'ls', 'about', 'whoami', 'rss', 'feed',
+            'status', 'ps', 'theme', 'version', 'ver', 'date', 'time', 'uptime', 'neofetch',
+            'matrix', 'weather', 'joke', 'fun', 'skills', 'tech', 'projects', 'proj',
+            'contact', 'social', 'history', 'hist', 'tree', 'cat', 'pwd', 'who', 'uname', 'echo'
+        ];
         const value = input.value.toLowerCase();
         const matches = commands.filter(cmd => cmd.startsWith(value));
         
@@ -367,28 +746,121 @@ class TerminalJournal {
     }
 
     loadSampleData() {
-        // Load sample log data into sidebar
-        const logItems = document.getElementById('logItems');
-        const sampleLogs = [
-            { title: 'CompTIA Project+ Certified', date: '2025-02-20', status: 'certified', tags: ['#certification', '#project-management'] },
-            { title: 'Ubuntu VM Hardening', date: '2025-02-14', status: 'completed', tags: ['#linux', '#security', '#hardening'] },
-            { title: 'CCNA Labs (OSPF, EIGRP)', date: '2025-02-10', status: 'completed', tags: ['#cisco', '#networking', '#routing'] },
-            { title: 'Terminal Portfolio v2.1', date: '2025-01-28', status: 'deployed', tags: ['#javascript', '#web-development'] },
-            { title: 'AWS SysOps Study', date: '2025-01-12', status: 'completed', tags: ['#aws', '#cloud', '#sysops'] }
+        // Load sample log files into left sidebar
+        const logFilesList = document.getElementById('logFilesList');
+        const sampleLogFiles = [
+            {
+                name: 'vpc-setup.md',
+                date: '2025-09-01',
+                preview: 'Setting up VPC with public and private subnets across multiple AZs. Configured security groups, NACLs, and routing tables...',
+                content: `# VPC Setup Log - 2025-09-01
+
+## Overview
+Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
+
+## Architecture
+- **VPC CIDR**: 10.0.0.0/16
+- **Public Subnets**: 10.0.1.0/24, 10.0.2.0/24
+- **Private Subnets**: 10.0.10.0/24, 10.0.20.0/24
+- **Availability Zones**: us-east-1a, us-east-1b
+
+## Security Groups
+- **Web Tier**: Allow HTTP/HTTPS from internet
+- **App Tier**: Allow traffic from Web Tier only
+- **DB Tier**: Allow traffic from App Tier only
+
+## Next Steps
+- Configure NAT Gateway for private subnet internet access
+- Set up VPC endpoints for S3 access
+- Implement VPC Flow Logs for monitoring`,
+                tags: ['#aws', '#vpc', '#networking', '#security']
+            },
+            {
+                name: 'lambda-deployment.md',
+                date: '2025-09-02',
+                preview: 'Deployed Lambda functions for metadata generation. Implemented EventBridge triggers and S3 event processing...',
+                content: `# Lambda Deployment Log - 2025-09-02
+
+## Functions Deployed
+1. **generateMetadata.js** - Processes log files and generates metadata
+2. **updateIndex.js** - Updates the main index file
+
+## Configuration
+- **Runtime**: Node.js 18.x
+- **Memory**: 256MB
+- **Timeout**: 30 seconds
+- **Environment Variables**:
+  - S3_BUCKET: terminal-logs-bucket
+  - REGION: us-east-1
+
+## EventBridge Rules
+- Trigger on S3 object creation
+- Filter for .md files in logs/ prefix
+- Target: generateMetadata function
+
+## Testing
+- ✅ S3 upload triggers Lambda
+- ✅ Metadata generation works
+- ✅ Error handling implemented`,
+                tags: ['#aws', '#lambda', '#serverless', '#automation']
+            },
+            {
+                name: 'amplify-setup.md',
+                date: '2025-09-03',
+                preview: 'Configured AWS Amplify for frontend hosting. Set up CI/CD pipeline with GitHub integration...',
+                content: `# Amplify Setup Log - 2025-09-03
+
+## Frontend Hosting
+- **Framework**: Static HTML/CSS/JS
+- **Build Command**: npm run build
+- **Publish Directory**: frontend/
+- **Custom Domain**: terminal.1percentnerd.com
+
+## CI/CD Pipeline
+- **Source**: GitHub repository
+- **Branch**: main
+- **Build Spec**: amplify.yml
+- **Auto Deploy**: Enabled
+
+## Environment Variables
+- **NODE_ENV**: production
+- **API_ENDPOINT**: https://api.terminal.1percentnerd.com
+
+## Performance
+- **CDN**: CloudFront distribution
+- **Caching**: 24 hours for static assets
+- **Compression**: Gzip enabled
+
+## Security
+- **HTTPS**: SSL certificate from ACM
+- **Headers**: Security headers configured
+- **CORS**: Properly configured for API access`,
+                tags: ['#aws', '#amplify', '#frontend', '#cicd']
+            }
         ];
 
-        sampleLogs.forEach(log => {
-            const logItem = document.createElement('div');
-            logItem.className = 'log-item';
-            logItem.innerHTML = `
-                <div class="log-title">${log.title}</div>
-                <div class="log-date">${log.date}</div>
-                <div class="log-status ${log.status}">${log.status}</div>
+        sampleLogFiles.forEach((logFile, index) => {
+            const logFileItem = document.createElement('div');
+            logFileItem.className = 'log-file-item';
+            if (index === 0) {
+                logFileItem.classList.add('active');
+                this.currentLogFile = logFile;
+            }
+            
+            logFileItem.innerHTML = `
+                <div class="log-file-name">${logFile.name}</div>
+                <div class="log-file-date">${logFile.date}</div>
+                <div class="log-file-preview">${logFile.preview}</div>
             `;
-            logItems.appendChild(logItem);
+            
+            logFileItem.addEventListener('click', () => {
+                this.selectLogFile(logFile, logFileItem);
+            });
+            
+            logFilesList.appendChild(logFileItem);
             
             // Detect tech stack from tags
-            this.detectTechStack(log.tags);
+            this.detectTechStack(logFile.tags);
         });
         
         // Update tech stack display
@@ -434,7 +906,6 @@ class TerminalJournal {
         techStack.innerHTML = '';
 
         if (this.detectedTechStack.size === 0) {
-            techStack.innerHTML = '<span class="tech-badge">Learning Journey</span>';
             return;
         }
 
@@ -444,6 +915,58 @@ class TerminalJournal {
             badge.textContent = tech;
             techStack.appendChild(badge);
         });
+    }
+
+    selectLogFile(logFile, logFileItem) {
+        // Remove active class from all log file items
+        document.querySelectorAll('.log-file-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        
+        // Add active class to selected item
+        logFileItem.classList.add('active');
+        
+        // Set current log file
+        this.currentLogFile = logFile;
+        
+        // Display log content in terminal
+        this.displayLogContent(logFile);
+    }
+
+    displayLogContent(logFile) {
+        // Clear terminal
+        this.clearTerminal();
+        
+        // Add log file content as command output
+        this.addCommandOutput('info', `Viewing log file: ${logFile.name}`);
+        this.addCommandOutput('system', `Last updated: ${logFile.date}`);
+        this.addCommandOutput('logs', this.formatLogContent(logFile.content));
+    }
+
+    formatLogContent(content) {
+        // Simple markdown-like formatting for terminal display
+        return content
+            .replace(/^# (.*$)/gim, '<h3>$1</h3>')
+            .replace(/^## (.*$)/gim, '<h4>$1</h4>')
+            .replace(/^### (.*$)/gim, '<h5>$1</h5>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/^- (.*$)/gim, '<li>$1</li>')
+            .replace(/^(\d+)\. (.*$)/gim, '<li>$1. $2</li>')
+            .replace(/^✅ (.*$)/gim, '<span style="color: var(--text-success);">✅ $1</span>')
+            .replace(/^❌ (.*$)/gim, '<span style="color: var(--text-error);">❌ $1</span>')
+            .replace(/\n/g, '<br>');
+    }
+
+    toggleSidebar() {
+        const sidebar = document.getElementById('rightSidebar');
+        this.sidebarCollapsed = !this.sidebarCollapsed;
+        
+        if (this.sidebarCollapsed) {
+            sidebar.classList.add('collapsed');
+        } else {
+            sidebar.classList.remove('collapsed');
+        }
     }
 }
 
@@ -520,6 +1043,185 @@ const additionalStyles = `
     
     .command-output.info {
         border-left-color: var(--text-info);
+    }
+    
+    /* New command output styles */
+    .help-sections {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .help-section h4 {
+        color: var(--text-accent);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .help-section ul {
+        margin: 0;
+        padding-left: 1rem;
+    }
+    
+    .help-section li {
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .neofetch {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start;
+    }
+    
+    .neofetch-left pre {
+        margin: 0;
+        font-size: 0.6rem;
+        line-height: 1.2;
+        color: var(--text-accent);
+    }
+    
+    .neofetch-right {
+        flex: 1;
+    }
+    
+    .neofetch-right p {
+        margin: 0.25rem 0;
+        font-size: 0.875rem;
+    }
+    
+    .matrix-container {
+        text-align: center;
+    }
+    
+    .matrix-text {
+        font-family: 'Courier New', monospace;
+        font-size: 0.7rem;
+        line-height: 1.1;
+        color: var(--text-accent);
+        margin: 1rem 0;
+        overflow-x: auto;
+    }
+    
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .skill-category h4 {
+        color: var(--text-accent);
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .skill-category ul {
+        margin: 0;
+        padding-left: 1rem;
+    }
+    
+    .skill-category li {
+        margin-bottom: 0.25rem;
+        font-size: 0.875rem;
+    }
+    
+    .project-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        margin: 1rem 0;
+    }
+    
+    .project-item {
+        padding: 1rem;
+        background: var(--bg-glass);
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border-primary);
+    }
+    
+    .project-item h4 {
+        color: var(--text-accent);
+        margin-bottom: 0.5rem;
+    }
+    
+    .project-item p {
+        margin: 0.25rem 0;
+        font-size: 0.875rem;
+    }
+    
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    .contact-item {
+        padding: 0.5rem;
+        background: var(--bg-glass);
+        border-radius: var(--radius-sm);
+        font-size: 0.875rem;
+    }
+    
+    .contact-item a {
+        color: var(--text-accent);
+        text-decoration: none;
+    }
+    
+    .contact-item a:hover {
+        text-decoration: underline;
+    }
+    
+    .tree-structure {
+        font-family: 'Courier New', monospace;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        color: var(--text-secondary);
+        background: var(--bg-glass);
+        padding: 1rem;
+        border-radius: var(--radius-md);
+        overflow-x: auto;
+        margin: 1rem 0;
+    }
+    
+    .command-output.neofetch {
+        border-left-color: var(--text-success);
+    }
+    
+    .command-output.matrix {
+        border-left-color: var(--text-accent);
+    }
+    
+    .command-output.weather {
+        border-left-color: var(--text-info);
+    }
+    
+    .command-output.joke {
+        border-left-color: var(--text-warning);
+    }
+    
+    .command-output.skills {
+        border-left-color: var(--text-accent);
+    }
+    
+    .command-output.projects {
+        border-left-color: var(--text-info);
+    }
+    
+    .command-output.contact {
+        border-left-color: var(--text-success);
+    }
+    
+    .command-output.history {
+        border-left-color: var(--text-muted);
+    }
+    
+    .command-output.tree {
+        border-left-color: var(--text-secondary);
     }
 `;
 

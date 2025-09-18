@@ -23,9 +23,7 @@
         <div class="nav-container">
             <div class="nav-brand">
                 <i class="fas fa-terminal"></i>
-                <span>NerdPioneer</span>
-                <span class="brand-separator">·</span>
-                <span class="brand-subtitle">Terminal</span>
+                <span>Terminal</span>
             </div>
             <div class="nav-links">
                 <a href="#" class="nav-link active">
@@ -75,7 +73,7 @@
                 </div>
                 <div class="terminal-title">
                     <i class="fas fa-code"></i>
-                    <span>terminal-journal@nerdpioneer</span>
+                    <span>terminal@system</span>
                 </div>
                 <div class="terminal-status">
                     <div class="status-indicator online">
@@ -100,8 +98,8 @@
                         </pre>
                     </div>
                     <div class="welcome-text">
-                        <h1>Welcome to NerdPioneer Terminal</h1>
-                        <p>Interactive journey through my cloud computing and cybersecurity learning path</p>
+                        <h1>Welcome to Terminal</h1>
+                        <p>Interactive journey through cloud computing and cybersecurity learning path</p>
                         <div class="tech-stack" id="techStack">
                             <!-- Tech badges will be dynamically added based on detected log types -->
                         </div>
@@ -155,23 +153,19 @@
             </div>
         </div>
 
-        <!-- Sidebar (Hidden by default) -->
-        <div class="sidebar" id="sidebar">
+        <!-- Right Sidebar for Log Previews -->
+        <div class="right-sidebar" id="rightSidebar">
             <div class="sidebar-header">
-                <h3>Quick Access</h3>
-                <button class="sidebar-close" id="sidebarClose" title="Close sidebar">
-                    <i class="fas fa-times"></i>
+                <h3>Log Files</h3>
+                <button class="sidebar-toggle" id="sidebarToggle" title="Toggle sidebar">
+                    <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
-            <div class="sidebar-content">
-                <div class="log-preview">
-                    <h4>Recent Logs</h4>
-                    <div class="log-items" id="logItems">
-                        <!-- Log items will be populated here -->
-                    </div>
-                </div>
+            <div class="log-files-list" id="logFilesList">
+                <!-- Log files will be populated here -->
             </div>
         </div>
+
     </div>
 
     <!-- Loading Overlay -->
