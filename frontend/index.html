@@ -21,8 +21,8 @@
 
     <!-- Main Container -->
     <div class="container">
-        <!-- Terminal and Logs Section -->
-        <div class="main-content">
+        <!-- Desktop: Terminal and Logs Section -->
+        <div class="main-content desktop-only">
             <!-- Terminal Window -->
             <div class="terminal-window" id="terminalWindow">
             <!-- Terminal Header -->
@@ -100,41 +100,44 @@
                     </button>
                 </div>
             </div>
+
+            <!-- Desktop: Log Files Panel -->
+            <div class="log-files-panel desktop-only" id="logFilesPanel">
+                <div class="log-files-header">
+                    <h3>Log Files</h3>
+                    <div class="log-entry-count" id="logEntryCount">[3 entries]</div>
+                </div>
+                <div class="log-files-list" id="logFilesList">
+                    <!-- Log files will be populated here -->
+                </div>
+            </div>
         </div>
 
-        <!-- Log Files Panel -->
-        <div class="log-files-panel" id="logFilesPanel">
-            <div class="log-files-header">
-                <h3>Log Files</h3>
-                <div class="log-entry-count" id="logEntryCount">[3 entries]</div>
+        <!-- Mobile: Log List View -->
+        <div class="mobile-log-view mobile-only" id="mobileLogView">
+            <div class="mobile-log-header">
+                <h2>TERMINAL</h2>
+                <div class="mobile-log-count" id="mobileLogCount">3 entries</div>
             </div>
-            <div class="log-files-list" id="logFilesList">
-                <!-- Log files will be populated here -->
+            <div class="mobile-log-list" id="mobileLogList">
+                <!-- Mobile log files will be populated here -->
             </div>
-        </div>
         </div>
 
-        <!-- Navigation Section -->
-        <div class="navigation-section">
-            <div class="nav-buttons">
-                <button class="nav-btn active" data-command="home">
-                    <i class="fas fa-home"></i>
-                    <span>Home</span>
+        <!-- Mobile: Markdown Viewer -->
+        <div class="mobile-markdown-viewer mobile-only" id="mobileMarkdownViewer">
+            <div class="mobile-viewer-header">
+                <button class="back-btn" id="backToLogs">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Logs</span>
                 </button>
-                <button class="nav-btn" data-command="logs">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Logs</span>
-                </button>
-                <button class="nav-btn" data-command="projects">
-                    <i class="fas fa-project-diagram"></i>
-                    <span>Projects</span>
-                </button>
-                <a href="https://1percentnerd.com" class="nav-btn external" target="_blank" rel="noopener">
-                    <i class="fas fa-external-link-alt"></i>
-                    <span>Portfolio</span>
-                </a>
+                <h3 id="viewerTitle">Log Viewer</h3>
+            </div>
+            <div class="mobile-viewer-content" id="mobileViewerContent">
+                <!-- Markdown content will be displayed here -->
             </div>
         </div>
+
 
 
     </div>

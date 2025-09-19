@@ -15,6 +15,7 @@ class TerminalJournal {
         this.setupEventListeners();
         this.initializeTerminal();
         this.loadSampleData();
+        this.loadMobileData();
         this.hideLoadingOverlay();
     }
 
@@ -49,17 +50,6 @@ class TerminalJournal {
             });
         });
 
-        // Navigation buttons
-        document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const command = btn.dataset.command;
-                if (command) {
-                    this.executeCommand(command);
-                    this.updateActiveNavButton(btn);
-                }
-            });
-        });
 
         // Mobile log panel toggle
         document.addEventListener('click', (e) => {
@@ -71,19 +61,42 @@ class TerminalJournal {
         // Add mobile menu button for logs
         this.addMobileLogButton();
 
+        // Handle window resize for mobile responsiveness
+        window.addEventListener('resize', () => {
+            this.handleResize();
+        });
+
+        // Add touch gestures for mobile
+        this.addTouchGestures();
+
+        // Mobile-specific event listeners
+        this.setupMobileEventListeners();
+
     }
 
     initializeTerminal() {
-        // Add authentic terminal startup sequence
-        this.addCommandOutput('system', 'NerdPioneer Terminal v3.0 - Initializing...');
-        this.addCommandOutput('system', 'Loading configuration...');
-        this.addCommandOutput('system', 'Mounting file systems...');
-        this.addCommandOutput('system', 'Starting services...');
-        this.addCommandOutput('success', 'Terminal ready. Type "help" for available commands.');
-        this.addCommandOutput('info', 'Connected to learning-journey@terminal-amplify');
-        
-        // Focus input
-        document.getElementById('commandInput').focus();
+        // Add authentic terminal startup sequence with realistic timing
+        const startupSequence = [
+            { text: 'NerdPioneer Terminal v3.0 - Initializing...', type: 'system', delay: 0 },
+            { text: 'Loading configuration...', type: 'system', delay: 800 },
+            { text: 'Mounting file systems...', type: 'system', delay: 1600 },
+            { text: 'Starting services...', type: 'system', delay: 2400 },
+            { text: 'Terminal ready. Type "help" for available commands.', type: 'success', delay: 3200 },
+            { text: 'Connected to learning-journey@terminal-amplify', type: 'info', delay: 4000 }
+        ];
+
+        startupSequence.forEach(({ text, type, delay }) => {
+            setTimeout(() => {
+                this.addCommandOutput(type, text);
+            }, delay);
+        });
+
+        // Add final welcome message after startup
+        setTimeout(() => {
+            this.addCommandOutput('info', 'Welcome to your learning journey terminal!');
+            // Focus input after startup is complete
+            document.getElementById('commandInput').focus();
+        }, 5000);
     }
 
     handleKeyDown(e) {
@@ -242,8 +255,8 @@ class TerminalJournal {
                             content: this.formatLogContent(logFile.content)
                         };
                     } else {
-                        return {
-                            type: 'error',
+                return {
+                    type: 'error',
                             content: `cat: ${filename}: No such file or directory`
                         };
                     }
@@ -310,7 +323,11 @@ class TerminalJournal {
         element.appendChild(outputContent);
         
         let i = 0;
-        const typingSpeed = type === 'system' ? 20 : 30; // Faster for system messages
+        // Adjust typing speed for mobile devices
+        const isMobile = window.innerWidth <= 768;
+        const typingSpeed = isMobile ? 
+            (type === 'system' ? 10 : 15) : 
+            (type === 'system' ? 20 : 30);
         
         const typeChar = () => {
             if (i < text.length) {
@@ -692,6 +709,7 @@ terminal-amplify/
     toggleTheme() {
         this.currentTheme = this.currentTheme === 'dark' ? 'light' : 'dark';
         document.documentElement.setAttribute('data-theme', this.currentTheme);
+        document.body.classList.toggle('light-theme', this.currentTheme === 'light');
         
         const themeIcon = document.querySelector('#themeToggle i');
         themeIcon.className = this.currentTheme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
@@ -731,92 +749,182 @@ terminal-amplify/
         const logFilesList = document.getElementById('logFilesList');
         const sampleLogFiles = [
             {
-                name: 'vpc-setup.md',
+                name: 'learning-aws-vpc.md',
                 date: '2025-09-01',
-                preview: 'Setting up VPC with public and private subnets across multiple AZs. Configured security groups, NACLs, and routing tables...',
-                content: `# VPC Setup Log - 2025-09-01
+                preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
+                content: `# Learning AWS VPC - My Journey Begins
 
-## Overview
-Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
+*September 1, 2025*
 
-## Architecture
-- **VPC CIDR**: 10.0.0.0/16
-- **Public Subnets**: 10.0.1.0/24, 10.0.2.0/24
-- **Private Subnets**: 10.0.10.0/24, 10.0.20.0/24
-- **Availability Zones**: us-east-1a, us-east-1b
+## What I Learned Today
 
-## Security Groups
-- **Web Tier**: Allow HTTP/HTTPS from internet
-- **App Tier**: Allow traffic from Web Tier only
-- **DB Tier**: Allow traffic from App Tier only
+Today was a breakthrough day! I finally wrapped my head around AWS VPC (Virtual Private Cloud) concepts that had been confusing me for weeks.
 
-## Next Steps
-- Configure NAT Gateway for private subnet internet access
-- Set up VPC endpoints for S3 access
-- Implement VPC Flow Logs for monitoring`,
-                tags: ['#aws', '#vpc', '#networking', '#security']
+### The "Aha!" Moment
+
+The biggest realization was understanding that **VPC is like creating your own private section of AWS**. It's not just about security - it's about having complete control over your network architecture.
+
+### Key Concepts That Clicked
+
+- **CIDR Blocks**: I used to think these were just random numbers, but now I understand they define the IP address range for your VPC
+- **Subnets**: The difference between public and private subnets finally made sense when I visualized them as "rooms" in your VPC "house"
+- **Route Tables**: These are like the "traffic directors" telling data where to go
+
+### What I Built
+
+I set up a basic VPC with:
+- Public subnets for web-facing resources
+- Private subnets for databases and internal services
+- Security groups that actually make sense (not just random rules!)
+
+### Challenges I Faced
+
+- **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
+- **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
+- **Security group rules** - Still learning the difference between inbound and outbound rules
+
+### Tomorrow's Goals
+
+- Set up a NAT Gateway (and budget for it!)
+- Learn about VPC endpoints
+- Experiment with VPC Flow Logs
+
+*This learning journey is getting exciting!*`,
+                tags: ['#learning', '#aws', '#networking', '#breakthrough']
             },
             {
-                name: 'lambda-deployment.md',
+                name: 'serverless-first-steps.md',
                 date: '2025-09-02',
-                preview: 'Deployed Lambda functions for metadata generation. Implemented EventBridge triggers and S3 event processing...',
-                content: `# Lambda Deployment Log - 2025-09-02
+                preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
+                content: `# My First Serverless Adventure
 
-## Functions Deployed
-1. **generateMetadata.js** - Processes log files and generates metadata
-2. **updateIndex.js** - Updates the main index file
+*September 2, 2025*
 
-## Configuration
-- **Runtime**: Node.js 18.x
-- **Memory**: 256MB
-- **Timeout**: 30 seconds
-- **Environment Variables**:
-  - S3_BUCKET: terminal-logs-bucket
-  - REGION: us-east-1
+## The Serverless Learning Curve
 
-## EventBridge Rules
-- Trigger on S3 object creation
-- Filter for .md files in logs/ prefix
-- Target: generateMetadata function
+Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
 
-## Testing
-- ✅ S3 upload triggers Lambda
-- ✅ Metadata generation works
-- ✅ Error handling implemented`,
-                tags: ['#aws', '#lambda', '#serverless', '#automation']
+### What I Built Today
+
+I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
+- When I upload a new learning log to S3
+- Lambda automatically processes it
+- Updates my learning index
+
+### The "Magic" Moment
+
+Watching my function trigger automatically when I uploaded a file was incredible. No servers to manage, no infrastructure to worry about - just code that runs when needed.
+
+### Lessons Learned
+
+**The Good:**
+- **Pay-per-use pricing** - Only pay when your code actually runs
+- **Automatic scaling** - Handles traffic spikes without thinking about it
+- **No server management** - Focus on code, not infrastructure
+
+**The Challenges:**
+- **Cold starts** - First request can be slow (up to 10 seconds!)
+- **Memory limits** - Only 10GB max, had to optimize my code
+- **Timeout limits** - 15 minutes max execution time
+- **Debugging is harder** - Can't just SSH into a server
+
+### Code I Wrote
+
+\`\`\`javascript
+exports.handler = async (event) => {
+    // Process the uploaded log file
+    const bucket = event.Records[0].s3.bucket.name;
+    const key = event.Records[0].s3.object.key;
+    
+    console.log('Processing:', key);
+    // ... rest of the processing logic
+};
+\`\`\`
+
+### What Surprised Me
+
+- **Event-driven architecture** is actually pretty elegant once you get it
+- **Environment variables** are much easier to manage than I thought
+- **IAM roles** are crucial - spent 2 hours debugging permissions!
+
+### Next Steps
+
+- Learn about EventBridge for more complex event routing
+- Experiment with different Lambda runtimes
+- Figure out how to handle errors gracefully
+
+*Serverless is definitely the future, but it requires a different way of thinking!*`,
+                tags: ['#learning', '#serverless', '#lambda', '#automation']
             },
             {
-                name: 'amplify-setup.md',
+                name: 'frontend-deployment-joy.md',
                 date: '2025-09-03',
-                preview: 'Configured AWS Amplify for frontend hosting. Set up CI/CD pipeline with GitHub integration...',
-                content: `# Amplify Setup Log - 2025-09-03
+                preview: 'Deployed my first frontend to AWS Amplify! The CI/CD pipeline is like having a personal DevOps engineer...',
+                content: `# Frontend Deployment Made Simple
 
-## Frontend Hosting
-- **Framework**: Static HTML/CSS/JS
-- **Build Command**: npm run build
-- **Publish Directory**: frontend/
+*September 3, 2025*
+
+## From Localhost to Production
+
+Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed at how smooth the process was. Coming from manual FTP uploads, this feels like magic.
+
+### The Amplify Experience
+
+**What I Love:**
+- **Git-based deployment** - Push to GitHub, automatically deploys
+- **Built-in CI/CD** - No need to set up Jenkins or GitHub Actions
+- **Custom domains** - Easy SSL certificate management
+- **Performance optimization** - Automatic image optimization and compression
+
+### My Deployment Workflow
+
+1. **Code locally** - Make changes to my terminal interface
+2. **Commit and push** - \`git push origin main\`
+3. **Watch the magic** - Amplify automatically builds and deploys
+4. **Test in production** - Usually live within 2-3 minutes
+
+### What I Learned About Frontend Hosting
+
+**Before Amplify:**
+- Manual file uploads via FTP
+- No version control for deployments
+- Manual SSL certificate management
+- No performance optimization
+
+**With Amplify:**
+- Everything is automated
+- Every deployment is tracked
+- Built-in CDN for global performance
+- Automatic HTTPS
+
+### The Technical Details
+
+- **Framework**: Plain HTML/CSS/JavaScript (no build process needed)
 - **Custom Domain**: terminal.1percentnerd.com
+- **CDN**: CloudFront distribution included
+- **SSL**: Automatic certificate from AWS Certificate Manager
 
-## CI/CD Pipeline
-- **Source**: GitHub repository
-- **Branch**: main
-- **Build Spec**: amplify.yml
-- **Auto Deploy**: Enabled
+### Challenges I Overcame
 
-## Environment Variables
-- **NODE_ENV**: production
-- **API_ENDPOINT**: https://api.terminal.1percentnerd.com
+- **Build failures** - Had to learn about build specifications
+- **Environment variables** - Took time to understand how to pass them
+- **Caching issues** - Learned about cache invalidation strategies
 
-## Performance
-- **CDN**: CloudFront distribution
-- **Caching**: 24 hours for static assets
-- **Compression**: Gzip enabled
+### Performance Wins
 
-## Security
-- **HTTPS**: SSL certificate from ACM
-- **Headers**: Security headers configured
-- **CORS**: Properly configured for API access`,
-                tags: ['#aws', '#amplify', '#frontend', '#cicd']
+- **Page load time**: Under 2 seconds globally
+- **Image optimization**: Automatic WebP conversion
+- **Code splitting**: Automatic JavaScript bundling
+- **Compression**: Gzip enabled by default
+
+### What's Next
+
+- Set up staging environment for testing
+- Learn about Amplify's authentication features
+- Experiment with server-side rendering
+
+*This is exactly how modern web development should feel - simple, fast, and reliable!*`,
+                tags: ['#learning', '#frontend', '#deployment', '#amplify']
             }
         ];
 
@@ -1014,7 +1122,7 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
                 tags: ['#aws', '#amplify', '#frontend', '#cicd']
             }
         ];
-        
+
         return logFiles.find(file => file.name === filename);
     }
 
@@ -1043,21 +1151,390 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
     addMobileLogButton() {
         // Only add on mobile
         if (window.innerWidth <= 768) {
-            const terminalHeader = document.querySelector('.terminal-header');
-            const mobileLogBtn = document.createElement('button');
-            mobileLogBtn.className = 'mobile-log-btn';
-            mobileLogBtn.innerHTML = '<i class="fas fa-list"></i>';
-            mobileLogBtn.title = 'Toggle Log Files';
-            mobileLogBtn.addEventListener('click', () => this.toggleLogPanel());
-            
             const terminalStatus = document.querySelector('.terminal-status');
-            terminalStatus.appendChild(mobileLogBtn);
+            
+            // Check if button already exists
+            if (!document.querySelector('.mobile-log-btn')) {
+                const mobileLogBtn = document.createElement('button');
+                mobileLogBtn.className = 'mobile-log-btn';
+                mobileLogBtn.innerHTML = '<i class="fas fa-list"></i>';
+                mobileLogBtn.title = 'Toggle Log Files';
+                mobileLogBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.toggleLogPanel();
+                });
+                
+                terminalStatus.appendChild(mobileLogBtn);
+            }
         }
     }
 
     toggleLogPanel() {
         const logPanel = document.getElementById('logFilesPanel');
         logPanel.classList.toggle('open');
+        
+        // Prevent body scroll when panel is open
+        if (logPanel.classList.contains('open')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+    }
+
+    handleResize() {
+        // Re-add mobile log button if needed
+        if (window.innerWidth <= 768) {
+            this.addMobileLogButton();
+            // Load mobile data if not already loaded
+            this.loadMobileData();
+        } else {
+            // Remove mobile log button on desktop
+            const mobileBtn = document.querySelector('.mobile-log-btn');
+            if (mobileBtn) {
+                mobileBtn.remove();
+            }
+            
+            // Close log panel on desktop
+            const logPanel = document.getElementById('logFilesPanel');
+            logPanel.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    }
+
+    addTouchGestures() {
+        const logPanel = document.getElementById('logFilesPanel');
+        let startX = 0;
+        let currentX = 0;
+        let isDragging = false;
+
+        // Touch start
+        logPanel.addEventListener('touchstart', (e) => {
+            startX = e.touches[0].clientX;
+            isDragging = true;
+        }, { passive: true });
+
+        // Touch move
+        logPanel.addEventListener('touchmove', (e) => {
+            if (!isDragging) return;
+            
+            currentX = e.touches[0].clientX;
+            const diffX = startX - currentX;
+            
+            // Only allow swipe to close from the right
+            if (diffX < -50 && logPanel.classList.contains('open')) {
+                this.toggleLogPanel();
+                isDragging = false;
+            }
+        }, { passive: true });
+
+        // Touch end
+        logPanel.addEventListener('touchend', () => {
+            isDragging = false;
+        }, { passive: true });
+
+        // Close panel when clicking outside
+        document.addEventListener('click', (e) => {
+            if (logPanel.classList.contains('open') && 
+                !logPanel.contains(e.target) && 
+                !e.target.closest('.mobile-log-btn')) {
+                this.toggleLogPanel();
+            }
+        });
+    }
+
+    setupMobileEventListeners() {
+        // Back button for mobile markdown viewer
+        const backBtn = document.getElementById('backToLogs');
+        if (backBtn) {
+            backBtn.addEventListener('click', () => {
+                this.showMobileLogList();
+            });
+        }
+    }
+
+    loadMobileData() {
+        // Only load mobile data if on mobile
+        if (window.innerWidth <= 768) {
+            this.populateMobileLogList();
+        }
+    }
+
+    populateMobileLogList() {
+        const mobileLogList = document.getElementById('mobileLogList');
+        const mobileLogCount = document.getElementById('mobileLogCount');
+        
+        if (!mobileLogList) return;
+
+        const logFiles = [
+            {
+                name: 'learning-aws-vpc.md',
+                date: '2025-09-01',
+                preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
+                content: `# Learning AWS VPC - My Journey Begins
+
+*September 1, 2025*
+
+## What I Learned Today
+
+Today was a breakthrough day! I finally wrapped my head around AWS VPC (Virtual Private Cloud) concepts that had been confusing me for weeks.
+
+### The "Aha!" Moment
+
+The biggest realization was understanding that **VPC is like creating your own private section of AWS**. It's not just about security - it's about having complete control over your network architecture.
+
+### Key Concepts That Clicked
+
+- **CIDR Blocks**: I used to think these were just random numbers, but now I understand they define the IP address range for your VPC
+- **Subnets**: The difference between public and private subnets finally made sense when I visualized them as "rooms" in your VPC "house"
+- **Route Tables**: These are like the "traffic directors" telling data where to go
+
+### What I Built
+
+I set up a basic VPC with:
+- Public subnets for web-facing resources
+- Private subnets for databases and internal services
+- Security groups that actually make sense (not just random rules!)
+
+### Challenges I Faced
+
+- **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
+- **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
+- **Security group rules** - Still learning the difference between inbound and outbound rules
+
+### Tomorrow's Goals
+
+- Set up a NAT Gateway (and budget for it!)
+- Learn about VPC endpoints
+- Experiment with VPC Flow Logs
+
+*This learning journey is getting exciting!*`,
+                tags: ['#learning', '#aws', '#networking', '#breakthrough']
+            },
+            {
+                name: 'serverless-first-steps.md',
+                date: '2025-09-02',
+                preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
+                content: `# My First Serverless Adventure
+
+*September 2, 2025*
+
+## The Serverless Learning Curve
+
+Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
+
+### What I Built Today
+
+I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
+- When I upload a new learning log to S3
+- Lambda automatically processes it
+- Updates my learning index
+
+### The "Magic" Moment
+
+Watching my function trigger automatically when I uploaded a file was incredible. No servers to manage, no infrastructure to worry about - just code that runs when needed.
+
+### Lessons Learned
+
+**The Good:**
+- **Pay-per-use pricing** - Only pay when your code actually runs
+- **Automatic scaling** - Handles traffic spikes without thinking about it
+- **No server management** - Focus on code, not infrastructure
+
+**The Challenges:**
+- **Cold starts** - First request can be slow (up to 10 seconds!)
+- **Memory limits** - Only 10GB max, had to optimize my code
+- **Timeout limits** - 15 minutes max execution time
+- **Debugging is harder** - Can't just SSH into a server
+
+### Code I Wrote
+
+\`\`\`javascript
+exports.handler = async (event) => {
+    // Process the uploaded log file
+    const bucket = event.Records[0].s3.bucket.name;
+    const key = event.Records[0].s3.object.key;
+    
+    console.log('Processing:', key);
+    // ... rest of the processing logic
+};
+\`\`\`
+
+### What Surprised Me
+
+- **Event-driven architecture** is actually pretty elegant once you get it
+- **Environment variables** are much easier to manage than I thought
+- **IAM roles** are crucial - spent 2 hours debugging permissions!
+
+### Next Steps
+
+- Learn about EventBridge for more complex event routing
+- Experiment with different Lambda runtimes
+- Figure out how to handle errors gracefully
+
+*Serverless is definitely the future, but it requires a different way of thinking!*`,
+                tags: ['#learning', '#serverless', '#lambda', '#automation']
+            },
+            {
+                name: 'frontend-deployment-joy.md',
+                date: '2025-09-03',
+                preview: 'Deployed my first frontend to AWS Amplify! The CI/CD pipeline is like having a personal DevOps engineer...',
+                content: `# Frontend Deployment Made Simple
+
+*September 3, 2025*
+
+## From Localhost to Production
+
+Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed at how smooth the process was. Coming from manual FTP uploads, this feels like magic.
+
+### The Amplify Experience
+
+**What I Love:**
+- **Git-based deployment** - Push to GitHub, automatically deploys
+- **Built-in CI/CD** - No need to set up Jenkins or GitHub Actions
+- **Custom domains** - Easy SSL certificate management
+- **Performance optimization** - Automatic image optimization and compression
+
+### My Deployment Workflow
+
+1. **Code locally** - Make changes to my terminal interface
+2. **Commit and push** - \`git push origin main\`
+3. **Watch the magic** - Amplify automatically builds and deploys
+4. **Test in production** - Usually live within 2-3 minutes
+
+### What I Learned About Frontend Hosting
+
+**Before Amplify:**
+- Manual file uploads via FTP
+- No version control for deployments
+- Manual SSL certificate management
+- No performance optimization
+
+**With Amplify:**
+- Everything is automated
+- Every deployment is tracked
+- Built-in CDN for global performance
+- Automatic HTTPS
+
+### The Technical Details
+
+- **Framework**: Plain HTML/CSS/JavaScript (no build process needed)
+- **Custom Domain**: terminal.1percentnerd.com
+- **CDN**: CloudFront distribution included
+- **SSL**: Automatic certificate from AWS Certificate Manager
+
+### Challenges I Overcame
+
+- **Build failures** - Had to learn about build specifications
+- **Environment variables** - Took time to understand how to pass them
+- **Caching issues** - Learned about cache invalidation strategies
+
+### Performance Wins
+
+- **Page load time**: Under 2 seconds globally
+- **Image optimization**: Automatic WebP conversion
+- **Code splitting**: Automatic JavaScript bundling
+- **Compression**: Gzip enabled by default
+
+### What's Next
+
+- Set up staging environment for testing
+- Learn about Amplify's authentication features
+- Experiment with server-side rendering
+
+*This is exactly how modern web development should feel - simple, fast, and reliable!*`,
+                tags: ['#learning', '#frontend', '#deployment', '#amplify']
+            }
+        ];
+
+        // Update count
+        if (mobileLogCount) {
+            mobileLogCount.textContent = `${logFiles.length} entries`;
+        }
+
+        // Clear existing content
+        mobileLogList.innerHTML = '';
+
+        // Populate mobile log list
+        logFiles.forEach((logFile, index) => {
+            const logItem = document.createElement('div');
+            logItem.className = 'mobile-log-item';
+            
+            // Get icon based on log type
+            const getLogIcon = (tags) => {
+                if (tags.includes('#aws')) return '☁️';
+                if (tags.includes('#lambda')) return '⚡';
+                if (tags.includes('#amplify')) return '🚀';
+                if (tags.includes('#security')) return '🔒';
+                if (tags.includes('#networking')) return '🌐';
+                return '📝';
+            };
+            
+            logItem.innerHTML = `
+                <div class="mobile-log-item-header">
+                    <span class="mobile-log-icon">${getLogIcon(logFile.tags)}</span>
+                    <div class="mobile-log-title">
+                        <div class="mobile-log-name">${logFile.name}</div>
+                        <div class="mobile-log-date">${logFile.date}</div>
+                    </div>
+                </div>
+                <div class="mobile-log-tags">
+                    ${logFile.tags.map(tag => `<span class="mobile-log-tag">${tag.replace('#', '')}</span>`).join('')}
+                </div>
+                <div class="mobile-log-preview">${logFile.preview}</div>
+            `;
+            
+            logItem.addEventListener('click', () => {
+                this.showMobileMarkdownViewer(logFile);
+            });
+            
+            mobileLogList.appendChild(logItem);
+        });
+    }
+
+    showMobileMarkdownViewer(logFile) {
+        const logView = document.getElementById('mobileLogView');
+        const markdownViewer = document.getElementById('mobileMarkdownViewer');
+        const viewerTitle = document.getElementById('viewerTitle');
+        const viewerContent = document.getElementById('mobileViewerContent');
+        
+        if (!logView || !markdownViewer || !viewerTitle || !viewerContent) return;
+        
+        // Hide log list, show markdown viewer
+        logView.style.display = 'none';
+        markdownViewer.classList.add('active');
+        
+        // Set title and content
+        viewerTitle.textContent = logFile.name;
+        viewerContent.innerHTML = this.formatMarkdownContent(logFile.content);
+    }
+
+    showMobileLogList() {
+        const logView = document.getElementById('mobileLogView');
+        const markdownViewer = document.getElementById('mobileMarkdownViewer');
+        
+        if (!logView || !markdownViewer) return;
+        
+        // Show log list, hide markdown viewer
+        logView.style.display = 'block';
+        markdownViewer.classList.remove('active');
+    }
+
+    formatMarkdownContent(content) {
+        return content
+            .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+            .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+            .replace(/^### (.*$)/gim, '<h3>$3</h3>')
+            .replace(/^#### (.*$)/gim, '<h4>$4</h4>')
+            .replace(/^##### (.*$)/gim, '<h5>$5</h5>')
+            .replace(/^###### (.*$)/gim, '<h6>$6</h6>')
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/^- (.*$)/gim, '<li>$1</li>')
+            .replace(/^(\d+)\. (.*$)/gim, '<li>$1. $2</li>')
+            .replace(/^✅ (.*$)/gim, '<span style="color: var(--text-success);">✅ $1</span>')
+            .replace(/^❌ (.*$)/gim, '<span style="color: var(--text-error);">❌ $1</span>')
+            .replace(/`(.*?)`/g, '<code>$1</code>')
+            .replace(/\n/g, '<br>');
     }
 }
 

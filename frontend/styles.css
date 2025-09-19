@@ -72,6 +72,41 @@
     --border-cyber: #059669;
 }
 
+/* Light theme body styling */
+body.light-theme {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    color: var(--text-primary);
+}
+
+body.light-theme .container {
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .terminal-window {
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .log-files-panel {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+}
+
+body.light-theme .mobile-log-view {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .mobile-markdown-viewer {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
 /* Reset and Base */
 * {
     margin: 0;
@@ -81,6 +116,7 @@
 
 html {
     scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch; /* Fallback for older Safari */
 }
 
 body {
@@ -458,6 +494,7 @@ body::before {
 .terminal-title {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
     font-family: 'Montserrat', sans-serif;
     font-weight: 600;
@@ -465,6 +502,7 @@ body::before {
     color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    flex: 1;
 }
 
 .terminal-status {
@@ -478,6 +516,7 @@ body::before {
     gap: 0.5rem;
     align-items: center;
 }
+
 
 .control-btn-small {
     width: 2rem;
@@ -504,10 +543,10 @@ body::before {
 }
 
 .mobile-log-btn {
-    width: 2rem;
-    height: 2rem;
+    width: 2.5rem;
+    height: 2.5rem;
     border: 1px solid var(--border-primary);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     background: var(--bg-glass);
     color: var(--text-secondary);
     cursor: pointer;
@@ -517,7 +556,8 @@ body::before {
     transition: all var(--transition-fast);
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
+    box-shadow: var(--shadow-sm);
 }
 
 .mobile-log-btn:hover {
@@ -525,6 +565,34 @@ body::before {
     color: var(--text-primary);
     transform: scale(1.05);
     border-color: var(--border-accent);
+}
+
+.mobile-log-btn:active {
+    transform: scale(0.95);
+}
+
+/* Desktop/Mobile visibility classes */
+.desktop-only {
+    display: block;
+}
+
+.mobile-only {
+    display: none;
+}
+
+/* Show mobile log button on mobile */
+@media (max-width: 768px) {
+    .mobile-log-btn {
+        display: flex;
+    }
+    
+    .desktop-only {
+        display: none !important;
+    }
+    
+    .mobile-only {
+        display: block !important;
+    }
 }
 
 .status-indicator {
@@ -871,18 +939,19 @@ body::before {
 @media (max-width: 768px) {
     .main-content {
         grid-template-columns: 1fr;
-        gap: 0.5rem;
+        gap: 0.75rem;
     }
     
     .log-files-panel {
         position: fixed;
         top: 0;
         right: -100%;
-        width: 85%;
+        width: 90%;
         height: 100vh;
         z-index: 1000;
         transition: right var(--transition-normal);
-        box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+        box-shadow: -8px 0 25px rgba(0, 0, 0, 0.4);
+        border-radius: 0;
     }
     
     .log-files-panel.open {
@@ -891,49 +960,157 @@ body::before {
     
     .log-files-header {
         position: relative;
+        padding: 1.25rem;
+        background: var(--bg-tertiary);
+        border-bottom: 2px solid var(--border-accent);
     }
     
     .log-files-header::after {
         content: '✕';
         position: absolute;
-        right: 1rem;
+        right: 1.25rem;
         top: 50%;
         transform: translateY(-50%);
-        font-size: 1.2rem;
+        font-size: 1.5rem;
         cursor: pointer;
         color: var(--text-muted);
-    }
-    
-    .navigation-section {
-        padding: 0.75rem;
-    }
-    
-    .nav-buttons {
+        font-weight: bold;
+        padding: 0.5rem;
+        border-radius: 50%;
+        background: var(--bg-glass);
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
         justify-content: center;
     }
     
+    .log-files-header h3 {
+        font-size: 1.1rem;
+        font-weight: 700;
+    }
+    
+    .log-entry-count {
+        font-size: 0.8rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .log-file-item {
+        padding: 1.25rem;
+        margin: 0.75rem 0;
+        border-radius: var(--radius-lg);
+    }
+    
+    .log-file-header {
+        margin-bottom: 0.75rem;
+    }
+    
+    .log-file-name {
+        font-size: 1rem;
+        font-weight: 700;
+    }
+    
+    .log-file-date {
+        font-size: 0.8rem;
+    }
+    
+    .log-file-tags {
+        margin: 0.75rem 0;
+        gap: 0.5rem;
+    }
+    
+    .log-file-tag {
+        font-size: 0.75rem;
+        padding: 0.3rem 0.6rem;
+    }
+    
+    .log-file-preview {
+        font-size: 0.85rem;
+        line-height: 1.6;
+    }
+    
+    .navigation-section {
+        padding: 1rem;
+        margin-top: 0.75rem;
+    }
+    
+    .nav-buttons {
+        justify-content: space-between;
+        gap: 0.5rem;
+    }
+    
+    .nav-btn {
+        flex: 1;
+        padding: 1rem 0.5rem;
+        font-size: 0.8rem;
+        min-height: 3rem;
+    }
+    
     .nav-btn span {
-        display: none;
-    }
-    
-    .container {
-        padding: 0.5rem;
-    }
-    
-    .control-btn-small {
-        width: 1.75rem;
-        height: 1.75rem;
+        display: block;
+        margin-top: 0.25rem;
         font-size: 0.7rem;
     }
     
+    .container {
+        padding: 0.75rem;
+    }
+    
+    .control-btn-small {
+        width: 2.25rem;
+        height: 2.25rem;
+        font-size: 0.8rem;
+    }
+    
     .terminal-body {
-        padding: 1.5rem;
-        font-size: 15px;
+        padding: 1.25rem;
+        font-size: 16px;
     }
     
     .command-history {
-        padding: 1rem 1.5rem;
-        font-size: 15px;
+        padding: 1.25rem;
+        font-size: 16px;
+        min-height: 200px;
+        max-height: 350px;
+    }
+    
+    .command-input-container {
+        padding: 1rem;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.75rem;
+    }
+    
+    .prompt-display {
+        font-size: 0.9rem;
+        justify-content: center;
+    }
+    
+    #commandInput {
+        font-size: 16px;
+        padding: 1rem;
+        text-align: center;
+        border: 2px solid var(--border-primary);
+        border-radius: var(--radius-md);
+        background: var(--bg-glass);
+    }
+    
+    .quick-actions {
+        gap: 0.75rem;
+        margin-top: 1rem;
+    }
+    
+    .action-btn {
+        flex: 1;
+        padding: 1rem 0.5rem;
+        font-size: 0.8rem;
+        min-height: 3rem;
+    }
+    
+    .action-btn span {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.7rem;
     }
     
     .welcome-text h1 {
@@ -965,23 +1142,414 @@ body::before {
 }
 
 @media (max-width: 480px) {
-    .welcome-text h1 {
-        font-size: 1.75rem;
+    .container {
+        padding: 0.5rem;
     }
     
-    .tech-stack {
+    .terminal-body {
+        padding: 1rem;
+        font-size: 15px;
+    }
+    
+    .command-history {
+        padding: 1rem;
+        font-size: 15px;
+        min-height: 180px;
+        max-height: 300px;
+    }
+    
+    .command-input-container {
+        padding: 0.75rem;
         gap: 0.5rem;
     }
     
-    .tech-badge {
-        padding: 0.375rem 0.75rem;
+    #commandInput {
+        font-size: 15px;
+        padding: 0.75rem;
+    }
+    
+    .prompt-display {
+        font-size: 0.8rem;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .nav-btn {
+        padding: 0.75rem;
+        min-height: 2.5rem;
         font-size: 0.75rem;
     }
     
     .action-btn {
-        padding: 0.5rem 0.75rem;
+        padding: 0.75rem 0.5rem;
+        min-height: 2.5rem;
         font-size: 0.75rem;
     }
+    
+    .log-files-panel {
+        width: 95%;
+    }
+    
+    .log-files-header {
+        padding: 1rem;
+    }
+    
+    .log-files-header h3 {
+        font-size: 1rem;
+    }
+    
+    .log-file-item {
+        padding: 1rem;
+        margin: 0.5rem 0;
+    }
+    
+    .log-file-name {
+        font-size: 0.9rem;
+    }
+    
+    .log-file-tags {
+        gap: 0.25rem;
+    }
+    
+    .log-file-tag {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .control-btn-small {
+        width: 2rem;
+        height: 2rem;
+        font-size: 0.7rem;
+    }
+    
+    .terminal-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .terminal-title {
+        font-size: 0.9rem;
+    }
+    
+    .status-indicator {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Extra small devices (phones in landscape) */
+@media (max-width: 360px) {
+    .container {
+        padding: 0.25rem;
+    }
+    
+    .terminal-body {
+        padding: 0.75rem;
+        font-size: 14px;
+    }
+    
+    .command-history {
+        padding: 0.75rem;
+        font-size: 14px;
+        min-height: 150px;
+        max-height: 250px;
+    }
+    
+    .command-input-container {
+        padding: 0.5rem;
+    }
+    
+    #commandInput {
+        font-size: 14px;
+        padding: 0.5rem;
+    }
+    
+    .nav-btn, .action-btn {
+        padding: 0.5rem;
+        min-height: 2rem;
+        font-size: 0.7rem;
+    }
+    
+    .log-file-item {
+        padding: 0.75rem;
+    }
+    
+    .log-file-name {
+        font-size: 0.85rem;
+    }
+}
+
+/* Mobile Log View Styles */
+.mobile-log-view {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-primary);
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.mobile-log-header {
+    padding: 1.5rem;
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--border-accent);
+    text-align: center;
+}
+
+.mobile-log-header h2 {
+    color: var(--text-accent);
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    text-align: center;
+    letter-spacing: 3px;
+    font-family: 'JetBrains Mono', 'Source Code Pro', monospace;
+    text-shadow: 0 0 10px var(--text-accent);
+}
+
+.mobile-log-count {
+    background: var(--text-accent);
+    color: var(--bg-primary);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-lg);
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.mobile-log-list {
+    padding: 1rem;
+}
+
+.mobile-log-item {
+    background: var(--bg-glass);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.mobile-log-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.mobile-log-item:hover {
+    background: var(--bg-glass-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--border-accent);
+}
+
+.mobile-log-item:hover::before {
+    left: 100%;
+}
+
+.mobile-log-item-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.mobile-log-icon {
+    font-size: 2rem;
+    opacity: 0.9;
+}
+
+.mobile-log-title {
+    flex: 1;
+}
+
+.mobile-log-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 0.25rem 0;
+}
+
+.mobile-log-date {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.mobile-log-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0;
+}
+
+.mobile-log-tag {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-accent);
+    border-radius: var(--radius-md);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mobile-log-preview {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-style: italic;
+    margin-top: 0.5rem;
+}
+
+/* Mobile Markdown Viewer */
+.mobile-markdown-viewer {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-primary);
+    overflow: hidden;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.mobile-markdown-viewer.active {
+    display: block;
+}
+
+.mobile-viewer-header {
+    padding: 1.5rem;
+    background: var(--bg-tertiary);
+    border-bottom: 2px solid var(--border-accent);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--bg-glass);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    background: var(--bg-glass-hover);
+    color: var(--text-primary);
+    border-color: var(--border-accent);
+}
+
+.mobile-viewer-header h3 {
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0;
+    flex: 1;
+}
+
+.mobile-viewer-content {
+    padding: 2rem;
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+.mobile-viewer-content h1,
+.mobile-viewer-content h2,
+.mobile-viewer-content h3,
+.mobile-viewer-content h4,
+.mobile-viewer-content h5,
+.mobile-viewer-content h6 {
+    color: var(--text-accent);
+    margin: 1.5rem 0 1rem 0;
+    font-weight: 700;
+}
+
+.mobile-viewer-content h1 {
+    font-size: 1.8rem;
+    border-bottom: 2px solid var(--border-accent);
+    padding-bottom: 0.5rem;
+}
+
+.mobile-viewer-content h2 {
+    font-size: 1.5rem;
+}
+
+.mobile-viewer-content h3 {
+    font-size: 1.3rem;
+}
+
+.mobile-viewer-content p {
+    margin: 1rem 0;
+    color: var(--text-secondary);
+}
+
+.mobile-viewer-content ul,
+.mobile-viewer-content ol {
+    margin: 1rem 0;
+    padding-left: 2rem;
+}
+
+.mobile-viewer-content li {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.mobile-viewer-content strong {
+    color: var(--text-primary);
+    font-weight: 700;
+}
+
+.mobile-viewer-content em {
+    color: var(--text-italic);
+    font-style: italic;
+}
+
+.mobile-viewer-content code {
+    background: var(--bg-accent);
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--radius-sm);
+    font-family: 'JetBrains Mono', 'Source Code Pro', monospace;
+    font-size: 0.9rem;
+    color: var(--text-accent);
+}
+
+.mobile-viewer-content pre {
+    background: var(--bg-accent);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    overflow-x: auto;
+    margin: 1rem 0;
+    border: 1px solid var(--border-primary);
+}
+
+.mobile-viewer-content pre code {
+    background: none;
+    padding: 0;
+    color: var(--text-primary);
 }
 
 /* Scrollbar Styling */
