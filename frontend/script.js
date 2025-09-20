@@ -1149,24 +1149,8 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
     }
 
     addMobileLogButton() {
-        // Only add on mobile
-        if (window.innerWidth <= 768) {
-            const terminalStatus = document.querySelector('.terminal-status');
-            
-            // Check if button already exists
-            if (!document.querySelector('.mobile-log-btn') && terminalStatus) {
-                const mobileLogBtn = document.createElement('button');
-                mobileLogBtn.className = 'mobile-log-btn';
-                mobileLogBtn.innerHTML = '<i class="fas fa-list"></i>';
-                mobileLogBtn.title = 'Toggle Log Files';
-                mobileLogBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.toggleMobileLogView();
-                });
-                
-                terminalStatus.appendChild(mobileLogBtn);
-            }
-        }
+        // Mobile logs are now always visible, no button needed
+        // This function is kept for compatibility but does nothing
     }
 
     toggleLogPanel() {
@@ -1182,21 +1166,8 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
     }
 
     toggleMobileLogView() {
-        const mobileLogView = document.getElementById('mobileLogView');
-        const mainContent = document.querySelector('.main-content');
-        
-        if (mobileLogView && mainContent) {
-            if (mobileLogView.style.display === 'none' || mobileLogView.style.display === '') {
-                // Show mobile log view
-                mobileLogView.style.display = 'block';
-                mainContent.style.display = 'none';
-                this.populateMobileLogList();
-            } else {
-                // Show terminal
-                mobileLogView.style.display = 'none';
-                mainContent.style.display = 'block';
-            }
-        }
+        // Mobile logs are now always visible in single-column layout
+        // This function is kept for compatibility but does nothing
     }
 
     handleResize() {
@@ -1502,28 +1473,24 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
             `;
             
             logItem.addEventListener('click', () => {
-                this.showMobileMarkdownViewer(logFile);
+                this.displayLogInTerminal(logFile);
             });
             
             mobileLogList.appendChild(logItem);
         });
     }
 
-    showMobileMarkdownViewer(logFile) {
-        const logView = document.getElementById('mobileLogView');
-        const markdownViewer = document.getElementById('mobileMarkdownViewer');
-        const viewerTitle = document.getElementById('viewerTitle');
-        const viewerContent = document.getElementById('mobileViewerContent');
+    displayLogInTerminal(logFile) {
+        // Clear terminal and show log content
+        this.clearTerminal();
         
-        if (!logView || !markdownViewer || !viewerTitle || !viewerContent) return;
+        // Add log file content as command output
+        this.addCommandOutput('info', `Viewing log file: ${logFile.name}`);
+        this.addCommandOutput('system', `Last updated: ${logFile.date}`);
+        this.addCommandOutput('logs', this.formatLogContent(logFile.content));
         
-        // Hide log list, show markdown viewer
-        logView.style.display = 'none';
-        markdownViewer.classList.add('active');
-        
-        // Set title and content
-        viewerTitle.textContent = logFile.name;
-        viewerContent.innerHTML = this.formatMarkdownContent(logFile.content);
+        // Scroll to bottom
+        this.scrollToBottom();
     }
 
     showMobileLogList() {

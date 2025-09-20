@@ -580,66 +580,59 @@ body::before {
     display: none;
 }
 
-/* Show mobile log button on mobile */
+/* Mobile single-column layout */
 @media (max-width: 768px) {
-    .mobile-log-btn {
-        display: flex;
-    }
-    
+    /* Hide desktop-only elements */
     .desktop-only {
         display: none !important;
     }
     
-    .mobile-only {
-        display: block !important;
-    }
-    
-    /* Show terminal interface on mobile */
+    /* Main mobile layout - single column */
     .main-content {
-        display: block !important;
+        display: flex !important;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
     }
     
     .terminal-container {
         display: flex !important;
         flex-direction: column;
-        height: 100vh;
+        flex: 1;
+        min-height: 0;
     }
     
     .terminal-header {
         display: flex !important;
+        flex-shrink: 0;
     }
     
     .terminal-body {
         display: flex !important;
+        flex-direction: column;
         flex: 1;
+        min-height: 0;
     }
     
     .terminal-interface {
         display: flex !important;
         flex-direction: column;
         flex: 1;
+        min-height: 0;
     }
     
     .command-history {
         display: block !important;
         flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
     
     .command-input-container {
         display: flex !important;
-    }
-    
-    /* Hide the mobile log view by default, show terminal instead */
-    .mobile-log-view {
-        display: none !important;
-    }
-    
-    .mobile-markdown-viewer {
-        display: none !important;
-    }
-    
-    /* Mobile terminal improvements */
-    .command-input-container {
+        flex-shrink: 0;
         padding: 1rem;
         background: var(--bg-primary);
         border-top: 1px solid var(--border-primary);
@@ -656,12 +649,6 @@ body::before {
         width: 100%;
     }
     
-    .command-history {
-        padding: 1rem;
-        font-size: 0.9rem;
-        line-height: 1.4;
-    }
-    
     .command-line {
         margin-bottom: 0.5rem;
         word-wrap: break-word;
@@ -671,6 +658,116 @@ body::before {
         margin-bottom: 0.75rem;
         padding: 0.5rem;
         font-size: 0.85rem;
+    }
+    
+    /* Mobile log files section - always visible underneath terminal */
+    .mobile-log-view {
+        display: block !important;
+        background: var(--bg-secondary);
+        border-top: 2px solid var(--border-primary);
+        max-height: 40vh;
+        overflow-y: auto;
+    }
+    
+    .mobile-log-header {
+        padding: 1rem;
+        background: var(--bg-glass);
+        border-bottom: 1px solid var(--border-primary);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    
+    .mobile-log-header h2 {
+        margin: 0;
+        font-size: 1rem;
+        color: var(--text-accent);
+        text-align: center;
+    }
+    
+    .mobile-log-count {
+        text-align: center;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 0.25rem;
+    }
+    
+    .mobile-log-list {
+        padding: 0.5rem;
+    }
+    
+    .mobile-log-item {
+        background: var(--bg-glass);
+        border: 1px solid var(--border-primary);
+        border-radius: var(--radius-sm);
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+    
+    .mobile-log-item:hover {
+        background: var(--bg-primary);
+        border-color: var(--text-accent);
+    }
+    
+    .mobile-log-item-header {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile-log-icon {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-log-name {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-size: 0.9rem;
+    }
+    
+    .mobile-log-date {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-left: auto;
+    }
+    
+    .mobile-log-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .mobile-log-tag {
+        background: var(--text-accent);
+        color: var(--bg-primary);
+        padding: 0.2rem 0.4rem;
+        border-radius: var(--radius-sm);
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+    
+    .mobile-log-preview {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    
+    /* Hide mobile markdown viewer - we'll use terminal for viewing */
+    .mobile-markdown-viewer {
+        display: none !important;
+    }
+    
+    /* Hide mobile log button - logs are always visible */
+    .mobile-log-btn {
+        display: none !important;
     }
     
     /* Make action buttons more touch-friendly */
