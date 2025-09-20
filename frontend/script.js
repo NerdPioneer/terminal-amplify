@@ -82,7 +82,7 @@ class TerminalJournal {
             { text: 'Mounting file systems...', type: 'system', delay: 1600 },
             { text: 'Starting services...', type: 'system', delay: 2400 },
             { text: 'Terminal ready. Type "help" for available commands.', type: 'success', delay: 3200 },
-            { text: 'Connected to learning-journey@terminal-amplify', type: 'info', delay: 4000 }
+            { text: 'Connected to user@bunker', type: 'info', delay: 4000 }
         ];
 
         startupSequence.forEach(({ text, type, delay }) => {
@@ -1154,14 +1154,14 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
             const terminalStatus = document.querySelector('.terminal-status');
             
             // Check if button already exists
-            if (!document.querySelector('.mobile-log-btn')) {
+            if (!document.querySelector('.mobile-log-btn') && terminalStatus) {
                 const mobileLogBtn = document.createElement('button');
                 mobileLogBtn.className = 'mobile-log-btn';
                 mobileLogBtn.innerHTML = '<i class="fas fa-list"></i>';
                 mobileLogBtn.title = 'Toggle Log Files';
                 mobileLogBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    this.toggleLogPanel();
+                    this.toggleMobileLogView();
                 });
                 
                 terminalStatus.appendChild(mobileLogBtn);
@@ -1178,6 +1178,24 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
             document.body.style.overflow = 'hidden';
         } else {
             document.body.style.overflow = '';
+        }
+    }
+
+    toggleMobileLogView() {
+        const mobileLogView = document.getElementById('mobileLogView');
+        const mainContent = document.querySelector('.main-content');
+        
+        if (mobileLogView && mainContent) {
+            if (mobileLogView.style.display === 'none' || mobileLogView.style.display === '') {
+                // Show mobile log view
+                mobileLogView.style.display = 'block';
+                mainContent.style.display = 'none';
+                this.populateMobileLogList();
+            } else {
+                // Show terminal
+                mobileLogView.style.display = 'none';
+                mainContent.style.display = 'block';
+            }
         }
     }
 
