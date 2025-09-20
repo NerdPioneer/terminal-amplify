@@ -300,7 +300,7 @@ class TerminalJournal {
         commandLine.className = 'command-line fade-in';
         
         commandLine.innerHTML = `
-            <span class="prompt">user@terminal:~/journey$</span>
+            <span class="prompt">user@bunker:~/bunker$</span>
             <span class="command">${command}</span>
         `;
         
