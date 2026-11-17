@@ -72,8 +72,6 @@ Files in `logs/` are named `YYYY-MM-DD-topic.md`. Each sample includes the topic
 - **LinkedIn**: [linkedin.com/in/ezekiel-obeisun](https://linkedin.com/in/ezekiel-obeisun)
 - **GitHub**: [github.com/NerdPioneer](https://github.com/NerdPioneer)
 
-The `contact` command inside the terminal still shows `linkedin.com/in/nerdpioneer`. The current profile is the link above.
-
 ## License
 
 MIT. See [LICENSE](LICENSE).

@@ -574,7 +574,7 @@ class TerminalJournal {
                     <strong>📧 Email:</strong> hello@1percentnerd.com
                 </div>
                 <div class="contact-item">
-                    <strong>💼 LinkedIn:</strong> <a href="https://linkedin.com/in/nerdpioneer" target="_blank" rel="noopener">linkedin.com/in/nerdpioneer</a>
+                    <strong>💼 LinkedIn:</strong> <a href="https://linkedin.com/in/ezekiel-obeisun" target="_blank" rel="noopener">linkedin.com/in/ezekiel-obeisun</a>
                 </div>
                 <div class="contact-item">
                     <strong>🐙 GitHub:</strong> <a href="https://github.com/NerdPioneer" target="_blank" rel="noopener">github.com/NerdPioneer</a>
