@@ -723,159 +723,107 @@ terminal-amplify/
             {
                 name: 'aws-vpc.md',
                 date: '2025-09-01',
-                preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
+                preview: 'Custom VPC with public and private subnets, a NAT gateway, Lambda security groups, and S3 VPC endpoints.',
                 content: `# AWS VPC
 
 *September 1, 2025*
 
-## What I Learned Today
+## Configuration
 
-Today was a breakthrough day! I finally wrapped my head around AWS VPC (Virtual Private Cloud) concepts that had been confusing me for weeks.
-
-### The "Aha!" Moment
-
-The biggest realization was understanding that **VPC is like creating your own private section of AWS**. It's not just about security - it's about having complete control over your network architecture.
-
-### Key Concepts That Clicked
-
-- **CIDR Blocks**: I used to think these were just random numbers, but now I understand they define the IP address range for your VPC
-- **Subnets**: The difference between public and private subnets finally made sense when I visualized them as "rooms" in your VPC "house"
-- **Route Tables**: These are like the "traffic directors" telling data where to go
-
-### What I Built
-
-I set up a basic VPC with:
-- Public subnets for web-facing resources
+Custom VPC for this project:
+- Public subnets for internet-facing resources
 - Private subnets for databases and internal services
-- Security groups that actually make sense (not just random rules!)
+- Internet gateway on the public route tables
+- NAT gateway for outbound traffic from the private subnets
+- Security groups for Lambda
+- VPC endpoints for S3
 
-### Challenges I Faced
+## Notes
 
-- **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
-- **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
+- **CIDR**: The VPC CIDR is the address range subdivided into subnet CIDRs
+- **Subnets**: Public subnets route 0.0.0.0/0 to an internet gateway. Private subnets do not
+- **Route tables**: Each subnet is associated with one route table
+- **NAT Gateway**: About $45/month plus data processing, required for internet egress from private subnets
+- **Private subnet routing**: A missing default route to the NAT gateway leaves the subnet with no internet path
+- **S3 endpoints**: Gateway endpoints keep S3 traffic on the AWS network
 `,
-                tags: ['#aws', '#networking', '#breakthrough']
+                tags: ['#aws', '#vpc', '#networking']
             },
             {
                 name: 'serverless.md',
                 date: '2025-09-02',
-                preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
-                content: `# My First Serverless Adventure
+                preview: 'Node.js Lambda lists Markdown objects in S3 and writes a metadata file. Runtime Node.js 18, 256 MB, 30 second timeout.',
+                content: `# Lambda metadata function
 
 *September 2, 2025*
 
-## Serverless function
+## Behavior
 
-Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
+The function runs when a Markdown object is uploaded to S3:
+- Read the bucket and key from the S3 event
+- Process the object
+- Write a metadata file
 
-### What I Built Today
+## Runtime
 
-I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
-- When a Markdown file is uploaded to S3
-- Lambda processes it
-- Writes a metadata file
+- **Pricing**: Duration and memory, billed per invocation
+- **Scaling**: Concurrent executions scale with incoming events
+- **Cold start**: First request after idle can take up to 10 seconds
+- **Memory**: Configured memory, up to 10 GB
+- **Timeout**: Maximum 15 minutes
+- **Debugging**: CloudWatch Logs; there is no host to SSH to
 
-### The "Magic" Moment
-
-Watching my function trigger automatically when I uploaded a file was incredible. No servers to manage, no infrastructure to worry about - just code that runs when needed.
-
-### Lessons Learned
-
-**The Good:**
-- **Pay-per-use pricing** - Only pay when your code actually runs
-- **Automatic scaling** - Handles traffic spikes without thinking about it
-- **No server management** - Focus on code, not infrastructure
-
-**The Challenges:**
-- **Cold starts** - First request can be slow (up to 10 seconds!)
-- **Memory limits** - Only 10GB max, had to optimize my code
-- **Timeout limits** - 15 minutes max execution time
-- **Debugging is harder** - Can't just SSH into a server
-
-### Code I Wrote
+## Handler
 
 \`\`\`javascript
 exports.handler = async (event) => {
-    // Process the uploaded log file
     const bucket = event.Records[0].s3.bucket.name;
     const key = event.Records[0].s3.object.key;
-    
+
     console.log('Processing:', key);
-    // ... rest of the processing logic
 };
 \`\`\`
 
-### What Surprised Me
+## Access
 
-- **Event-driven architecture** is actually pretty elegant once you get it
-- **Environment variables** are much easier to manage than I thought
-- **IAM roles** are crucial - spent 2 hours debugging permissions!
-
+- The execution role needs s3:GetObject and s3:PutObject on the log bucket
+- Bucket name and region are environment variables
+- A missing s3:ListBucket or object permission returns AccessDenied
 `,
                 tags: ['#serverless', '#lambda', '#automation']
             },
             {
                 name: 'frontend-deployment-joy.md',
                 date: '2025-09-03',
-                preview: 'Deployed my first frontend to AWS Amplify! The CI/CD pipeline is like having a personal DevOps engineer...',
-                content: `# Frontend Deployment Made Simple
+                preview: 'Static HTML, CSS, and JavaScript hosted on Amplify, served through CloudFront with TLS from ACM.',
+                content: `# Amplify static hosting
 
 *September 3, 2025*
 
-## From Localhost to Production
+## Deploy
 
-Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed at how smooth the process was. Coming from manual FTP uploads, this feels like magic.
+1. Edit the terminal files
+2. \`git push origin main\`
+3. Amplify builds from the connected repository
+4. The site is served from the CloudFront distribution, typically within a few minutes
 
-### The Amplify Experience
+## Hosting
 
-**What I Love:**
-- **Git-based deployment** - Push to GitHub, automatically deploys
-- **Built-in CI/CD** - No need to set up Jenkins or GitHub Actions
-- **Custom domains** - Easy SSL certificate management
-- **Performance optimization** - Automatic image optimization and compression
+- Git push on the connected branch starts a build
+- Each deployment is a separate Amplify job
+- CloudFront is the CDN
+- TLS certificate is issued through AWS Certificate Manager
+- **Framework**: HTML, CSS, and JavaScript, no application build
+- **Custom domain**: terminal.1percentnerd.com
 
-### My Deployment Workflow
+## Build and cache
 
-1. **Code locally** - Make changes to my terminal interface
-2. **Commit and push** - \`git push origin main\`
-3. **Watch the magic** - Amplify automatically builds and deploys
-4. **Test in production** - Usually live within 2-3 minutes
-
-### What I Learned About Frontend Hosting
-
-**Before Amplify:**
-- Manual file uploads via FTP
-- No version control for deployments
-- Manual SSL certificate management
-- No performance optimization
-
-**With Amplify:**
-- Everything is automated
-- Every deployment is tracked
-- Built-in CDN for global performance
-- Automatic HTTPS
-
-### The Technical Details
-
-- **Framework**: Plain HTML/CSS/JavaScript (no build process needed)
-- **Custom Domain**: terminal.1percentnerd.com
-- **CDN**: CloudFront distribution included
-- **SSL**: Automatic certificate from AWS Certificate Manager
-
-### Challenges I Overcame
-
-- **Build failures** - Had to learn about build specifications
-- **Environment variables** - Took time to understand how to pass them
-- **Caching issues** - Learned about cache invalidation strategies
-
-### Performance Wins
-
-- **Page load time**: Under 2 seconds globally
-- **Image optimization**: Automatic WebP conversion
-- **Code splitting**: Automatic JavaScript bundling
-- **Compression**: Gzip enabled by default
-
-*Plain HTML, CSS, and JavaScript. No build step.*`,
+- The build spec is amplify.yml
+- Environment variables are set on the Amplify app, not in the repository
+- CloudFront caches static assets until an invalidation or a TTL expiry
+- Gzip is enabled
+- Recorded page load is under 2 seconds
+`,
                 tags: ['#frontend', '#deployment', '#amplify']
             }
         ];
@@ -1207,159 +1155,107 @@ VPC layout notes for the terminal-amplify project.
             {
                 name: 'aws-vpc.md',
                 date: '2025-09-01',
-                preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
+                preview: 'Custom VPC with public and private subnets, a NAT gateway, Lambda security groups, and S3 VPC endpoints.',
                 content: `# AWS VPC
 
 *September 1, 2025*
 
-## What I Learned Today
+## Configuration
 
-Today was a breakthrough day! I finally wrapped my head around AWS VPC (Virtual Private Cloud) concepts that had been confusing me for weeks.
-
-### The "Aha!" Moment
-
-The biggest realization was understanding that **VPC is like creating your own private section of AWS**. It's not just about security - it's about having complete control over your network architecture.
-
-### Key Concepts That Clicked
-
-- **CIDR Blocks**: I used to think these were just random numbers, but now I understand they define the IP address range for your VPC
-- **Subnets**: The difference between public and private subnets finally made sense when I visualized them as "rooms" in your VPC "house"
-- **Route Tables**: These are like the "traffic directors" telling data where to go
-
-### What I Built
-
-I set up a basic VPC with:
-- Public subnets for web-facing resources
+Custom VPC for this project:
+- Public subnets for internet-facing resources
 - Private subnets for databases and internal services
-- Security groups that actually make sense (not just random rules!)
+- Internet gateway on the public route tables
+- NAT gateway for outbound traffic from the private subnets
+- Security groups for Lambda
+- VPC endpoints for S3
 
-### Challenges I Faced
+## Notes
 
-- **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
-- **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
+- **CIDR**: The VPC CIDR is the address range subdivided into subnet CIDRs
+- **Subnets**: Public subnets route 0.0.0.0/0 to an internet gateway. Private subnets do not
+- **Route tables**: Each subnet is associated with one route table
+- **NAT Gateway**: About $45/month plus data processing, required for internet egress from private subnets
+- **Private subnet routing**: A missing default route to the NAT gateway leaves the subnet with no internet path
+- **S3 endpoints**: Gateway endpoints keep S3 traffic on the AWS network
 `,
-                tags: ['#aws', '#networking', '#breakthrough']
+                tags: ['#aws', '#vpc', '#networking']
             },
             {
                 name: 'serverless.md',
                 date: '2025-09-02',
-                preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
-                content: `# My First Serverless Adventure
+                preview: 'Node.js Lambda lists Markdown objects in S3 and writes a metadata file. Runtime Node.js 18, 256 MB, 30 second timeout.',
+                content: `# Lambda metadata function
 
 *September 2, 2025*
 
-## Serverless function
+## Behavior
 
-Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
+The function runs when a Markdown object is uploaded to S3:
+- Read the bucket and key from the S3 event
+- Process the object
+- Write a metadata file
 
-### What I Built Today
+## Runtime
 
-I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
-- When a Markdown file is uploaded to S3
-- Lambda processes it
-- Writes a metadata file
+- **Pricing**: Duration and memory, billed per invocation
+- **Scaling**: Concurrent executions scale with incoming events
+- **Cold start**: First request after idle can take up to 10 seconds
+- **Memory**: Configured memory, up to 10 GB
+- **Timeout**: Maximum 15 minutes
+- **Debugging**: CloudWatch Logs; there is no host to SSH to
 
-### The "Magic" Moment
-
-Watching my function trigger automatically when I uploaded a file was incredible. No servers to manage, no infrastructure to worry about - just code that runs when needed.
-
-### Lessons Learned
-
-**The Good:**
-- **Pay-per-use pricing** - Only pay when your code actually runs
-- **Automatic scaling** - Handles traffic spikes without thinking about it
-- **No server management** - Focus on code, not infrastructure
-
-**The Challenges:**
-- **Cold starts** - First request can be slow (up to 10 seconds!)
-- **Memory limits** - Only 10GB max, had to optimize my code
-- **Timeout limits** - 15 minutes max execution time
-- **Debugging is harder** - Can't just SSH into a server
-
-### Code I Wrote
+## Handler
 
 \`\`\`javascript
 exports.handler = async (event) => {
-    // Process the uploaded log file
     const bucket = event.Records[0].s3.bucket.name;
     const key = event.Records[0].s3.object.key;
-    
+
     console.log('Processing:', key);
-    // ... rest of the processing logic
 };
 \`\`\`
 
-### What Surprised Me
+## Access
 
-- **Event-driven architecture** is actually pretty elegant once you get it
-- **Environment variables** are much easier to manage than I thought
-- **IAM roles** are crucial - spent 2 hours debugging permissions!
-
+- The execution role needs s3:GetObject and s3:PutObject on the log bucket
+- Bucket name and region are environment variables
+- A missing s3:ListBucket or object permission returns AccessDenied
 `,
                 tags: ['#serverless', '#lambda', '#automation']
             },
             {
                 name: 'frontend-deployment-joy.md',
                 date: '2025-09-03',
-                preview: 'Deployed my first frontend to AWS Amplify! The CI/CD pipeline is like having a personal DevOps engineer...',
-                content: `# Frontend Deployment Made Simple
+                preview: 'Static HTML, CSS, and JavaScript hosted on Amplify, served through CloudFront with TLS from ACM.',
+                content: `# Amplify static hosting
 
 *September 3, 2025*
 
-## From Localhost to Production
+## Deploy
 
-Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed at how smooth the process was. Coming from manual FTP uploads, this feels like magic.
+1. Edit the terminal files
+2. \`git push origin main\`
+3. Amplify builds from the connected repository
+4. The site is served from the CloudFront distribution, typically within a few minutes
 
-### The Amplify Experience
+## Hosting
 
-**What I Love:**
-- **Git-based deployment** - Push to GitHub, automatically deploys
-- **Built-in CI/CD** - No need to set up Jenkins or GitHub Actions
-- **Custom domains** - Easy SSL certificate management
-- **Performance optimization** - Automatic image optimization and compression
+- Git push on the connected branch starts a build
+- Each deployment is a separate Amplify job
+- CloudFront is the CDN
+- TLS certificate is issued through AWS Certificate Manager
+- **Framework**: HTML, CSS, and JavaScript, no application build
+- **Custom domain**: terminal.1percentnerd.com
 
-### My Deployment Workflow
+## Build and cache
 
-1. **Code locally** - Make changes to my terminal interface
-2. **Commit and push** - \`git push origin main\`
-3. **Watch the magic** - Amplify automatically builds and deploys
-4. **Test in production** - Usually live within 2-3 minutes
-
-### What I Learned About Frontend Hosting
-
-**Before Amplify:**
-- Manual file uploads via FTP
-- No version control for deployments
-- Manual SSL certificate management
-- No performance optimization
-
-**With Amplify:**
-- Everything is automated
-- Every deployment is tracked
-- Built-in CDN for global performance
-- Automatic HTTPS
-
-### The Technical Details
-
-- **Framework**: Plain HTML/CSS/JavaScript (no build process needed)
-- **Custom Domain**: terminal.1percentnerd.com
-- **CDN**: CloudFront distribution included
-- **SSL**: Automatic certificate from AWS Certificate Manager
-
-### Challenges I Overcame
-
-- **Build failures** - Had to learn about build specifications
-- **Environment variables** - Took time to understand how to pass them
-- **Caching issues** - Learned about cache invalidation strategies
-
-### Performance Wins
-
-- **Page load time**: Under 2 seconds globally
-- **Image optimization**: Automatic WebP conversion
-- **Code splitting**: Automatic JavaScript bundling
-- **Compression**: Gzip enabled by default
-
-*Plain HTML, CSS, and JavaScript. No build step.*`,
+- The build spec is amplify.yml
+- Environment variables are set on the Amplify app, not in the repository
+- CloudFront caches static assets until an invalidation or a TTL expiry
+- Gzip is enabled
+- Recorded page load is under 2 seconds
+`,
                 tags: ['#frontend', '#deployment', '#amplify']
             }
         ];
