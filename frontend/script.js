@@ -93,7 +93,7 @@ class TerminalJournal {
 
         // Add final welcome message after startup
         setTimeout(() => {
-            this.addCommandOutput('info', 'Welcome to your learning journey terminal!');
+            this.addCommandOutput('info', 'Welcome to Terminal Journal.');
             // Focus input after startup is complete
             document.getElementById('commandInput').focus();
         }, 5000);
@@ -373,7 +373,7 @@ class TerminalJournal {
                 <div class="help-section">
                     <h4>File & Content</h4>
                     <ul>
-                        <li><strong>logs/ls/list</strong> - View journey logs</li>
+                        <li><strong>logs/ls/list</strong> - List log files</li>
                         <li><strong>tree</strong> - Display directory structure</li>
                         <li><strong>cat</strong> - Display file contents</li>
                         <li><strong>history/hist</strong> - Command history</li>
@@ -382,7 +382,7 @@ class TerminalJournal {
                 <div class="help-section">
                     <h4>Information</h4>
                     <ul>
-                        <li><strong>projects/proj</strong> - Current projects</li>
+                        <li><strong>projects/proj</strong> - Projects</li>
                         <li><strong>contact/social</strong> - Contact information</li>
                         <li><strong>rss/feed</strong> - RSS feed information</li>
                     </ul>
@@ -411,11 +411,11 @@ class TerminalJournal {
 
     getLogsContent() {
         return `
-            <h3>Recent Learning Journey Logs:</h3>
+            <h3>Logs</h3>
             <div class="log-entries">
                 <div class="log-entry">
                     <span class="log-date">2025-02-20</span>
-                    <span class="log-title">CompTIA Project+ Certification Completed</span>
+                    <span class="log-title">CompTIA Project+ Certification</span>
                     <span class="log-status completed">Certified</span>
                 </div>
                 <div class="log-entry">
@@ -424,22 +424,17 @@ class TerminalJournal {
                     <span class="log-status completed">Completed</span>
                 </div>
                 <div class="log-entry">
-                    <span class="log-date">2025-02-10</span>
-                    <span class="log-title">CCNA Routing & Switching Labs (OSPF, EIGRP)</span>
-                    <span class="log-status completed">Completed</span>
-                </div>
-                <div class="log-entry">
                     <span class="log-date">2025-01-28</span>
                     <span class="log-title">Interactive Terminal Portfolio Module</span>
-                    <span class="log-status completed">Deployed</span>
+                    <span class="log-status completed">Completed</span>
                 </div>
                 <div class="log-entry">
                     <span class="log-date">2025-01-12</span>
-                    <span class="log-title">AWS SysOps Administrator Concepts Study</span>
+                    <span class="log-title">AWS SysOps Administrator</span>
                     <span class="log-status completed">Completed</span>
                 </div>
             </div>
-            <p><em>Total entries: 5 | Last updated: 2025-02-20</em></p>
+            <p><em>Total entries: 4 | Last updated: 2025-02-20</em></p>
         `;
     }
 
@@ -499,11 +494,11 @@ class TerminalJournal {
 
     getWeatherContent() {
         const weatherData = [
-            "☀️ Sunny - 72°F (22°C) - Perfect for coding!",
-            "⛅ Partly Cloudy - 68°F (20°C) - Great weather for learning",
-            "🌧️ Light Rain - 65°F (18°C) - Cozy indoor study weather",
-            "❄️ Snow - 32°F (0°C) - Hot coffee and terminal time",
-            "🌤️ Clear - 75°F (24°C) - Ideal for cloud computing studies"
+            "☀️ Sunny - 72°F (22°C)",
+            "⛅ Partly Cloudy - 68°F (20°C)",
+            "🌧️ Light Rain - 65°F (18°C)",
+            "❄️ Snow - 32°F (0°C)",
+            "🌤️ Clear - 75°F (24°C)"
         ];
         const randomWeather = weatherData[Math.floor(Math.random() * weatherData.length)];
         return `
@@ -539,25 +534,12 @@ class TerminalJournal {
 
     getProjectsContent() {
         return `
-            <h3>Current Projects</h3>
+            <h3>Projects</h3>
             <div class="project-list">
                 <div class="project-item">
-                    <h4>Terminal Amplify</h4>
-                    <p>A serverless terminal portfolio built with AWS Amplify, S3, and Lambda</p>
-                    <p><strong>Tech Stack:</strong> AWS, JavaScript, HTML/CSS</p>
-                    <p><strong>Status:</strong> In Development</p>
-                </div>
-                <div class="project-item">
-                    <h4>Cloud Infrastructure Lab</h4>
-                    <p>Building scalable cloud infrastructure with Terraform and Ansible</p>
-                    <p><strong>Tech Stack:</strong> AWS, Terraform, Ansible, Docker</p>
-                    <p><strong>Status:</strong> Planning Phase</p>
-                </div>
-                <div class="project-item">
-                    <h4>Network Monitoring Tool</h4>
-                    <p>Python-based network monitoring and alerting system</p>
-                    <p><strong>Tech Stack:</strong> Python, SNMP, Grafana, InfluxDB</p>
-                    <p><strong>Status:</strong> Research Phase</p>
+                    <h4>Terminal Journal</h4>
+                    <p>Static terminal interface in frontend/: HTML, CSS, and JavaScript.</p>
+                    <p><strong>Tech Stack:</strong> HTML, CSS, JavaScript</p>
                 </div>
             </div>
         `;
@@ -620,15 +602,8 @@ terminal-amplify/
 │   ├── 2025-09-01-vpc.md
 │   ├── 2025-09-02-lambda-deployment.md
 │   └── 2025-09-03-amplify-setup.md
-├── src/
-│   ├── App.js
-│   ├── components/
-│   │   └── Terminal.jsx
-│   └── assets/
-│       ├── styles.css
-│       └── terminal.js
-├── public/
-│   └── index.html
+├── .github/workflows/
+│   └── deploy.yml
 ├── amplify.yml
 ├── package.json
 └── README.md
@@ -644,14 +619,11 @@ terminal-amplify/
             <p><strong>Last Updated:</strong> 2025-02-20</p>
             <p><strong>Recent Posts:</strong></p>
             <ul>
-                <li>CompTIA Project+ Certification Completed</li>
-                <li>Building Defense-Grade Networks</li>
+                <li>CompTIA Project+ Certification</li>
                 <li>Hardened Ubuntu VM Against CIS Benchmarks</li>
-                <li>CCNA Routing & Switching Labs (OSPF, EIGRP)</li>
                 <li>Terminal Portfolio v2.1 Released</li>
-                <li>AWS SysOps Study Notes</li>
+                <li>AWS SysOps Administrator notes</li>
             </ul>
-            <p><em>Subscribe to stay updated on my learning journey!</em></p>
         `;
     }
 
@@ -749,10 +721,10 @@ terminal-amplify/
         const logFilesList = document.getElementById('logFilesList');
         const sampleLogFiles = [
             {
-                name: 'learning-aws-vpc.md',
+                name: 'aws-vpc.md',
                 date: '2025-09-01',
                 preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
-                content: `# Learning AWS VPC - My Journey Begins
+                content: `# AWS VPC
 
 *September 1, 2025*
 
@@ -781,35 +753,27 @@ I set up a basic VPC with:
 
 - **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
 - **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
-- **Security group rules** - Still learning the difference between inbound and outbound rules
-
-### Tomorrow's Goals
-
-- Set up a NAT Gateway (and budget for it!)
-- Learn about VPC endpoints
-- Experiment with VPC Flow Logs
-
-*This learning journey is getting exciting!*`,
-                tags: ['#learning', '#aws', '#networking', '#breakthrough']
+`,
+                tags: ['#aws', '#networking', '#breakthrough']
             },
             {
-                name: 'serverless-first-steps.md',
+                name: 'serverless.md',
                 date: '2025-09-02',
                 preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
                 content: `# My First Serverless Adventure
 
 *September 2, 2025*
 
-## The Serverless Learning Curve
+## Serverless function
 
 Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
 
 ### What I Built Today
 
 I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
-- When I upload a new learning log to S3
-- Lambda automatically processes it
-- Updates my learning index
+- When a Markdown file is uploaded to S3
+- Lambda processes it
+- Writes a metadata file
 
 ### The "Magic" Moment
 
@@ -847,14 +811,8 @@ exports.handler = async (event) => {
 - **Environment variables** are much easier to manage than I thought
 - **IAM roles** are crucial - spent 2 hours debugging permissions!
 
-### Next Steps
-
-- Learn about EventBridge for more complex event routing
-- Experiment with different Lambda runtimes
-- Figure out how to handle errors gracefully
-
-*Serverless is definitely the future, but it requires a different way of thinking!*`,
-                tags: ['#learning', '#serverless', '#lambda', '#automation']
+`,
+                tags: ['#serverless', '#lambda', '#automation']
             },
             {
                 name: 'frontend-deployment-joy.md',
@@ -917,14 +875,8 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
 - **Code splitting**: Automatic JavaScript bundling
 - **Compression**: Gzip enabled by default
 
-### What's Next
-
-- Set up staging environment for testing
-- Learn about Amplify's authentication features
-- Experiment with server-side rendering
-
-*This is exactly how modern web development should feel - simple, fast, and reliable!*`,
-                tags: ['#learning', '#frontend', '#deployment', '#amplify']
+*Plain HTML, CSS, and JavaScript. No build step.*`,
+                tags: ['#frontend', '#deployment', '#amplify']
             }
         ];
 
@@ -1042,7 +994,7 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
                 content: `# VPC Setup Log - 2025-09-01
 
 ## Overview
-Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
+VPC layout notes for the terminal-amplify project.
 
 ## Architecture
 - **VPC CIDR**: 10.0.0.0/16
@@ -1055,10 +1007,7 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
 - **App Tier**: Allow traffic from Web Tier only
 - **DB Tier**: Allow traffic from App Tier only
 
-## Next Steps
-- Configure NAT Gateway for private subnet internet access
-- Set up VPC endpoints for S3 access
-- Implement VPC Flow Logs for monitoring`,
+`,
                 tags: ['#aws', '#vpc', '#networking', '#security']
             },
             {
@@ -1256,10 +1205,10 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
 
         const logFiles = [
             {
-                name: 'learning-aws-vpc.md',
+                name: 'aws-vpc.md',
                 date: '2025-09-01',
                 preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
-                content: `# Learning AWS VPC - My Journey Begins
+                content: `# AWS VPC
 
 *September 1, 2025*
 
@@ -1288,35 +1237,27 @@ I set up a basic VPC with:
 
 - **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
 - **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
-- **Security group rules** - Still learning the difference between inbound and outbound rules
-
-### Tomorrow's Goals
-
-- Set up a NAT Gateway (and budget for it!)
-- Learn about VPC endpoints
-- Experiment with VPC Flow Logs
-
-*This learning journey is getting exciting!*`,
-                tags: ['#learning', '#aws', '#networking', '#breakthrough']
+`,
+                tags: ['#aws', '#networking', '#breakthrough']
             },
             {
-                name: 'serverless-first-steps.md',
+                name: 'serverless.md',
                 date: '2025-09-02',
                 preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
                 content: `# My First Serverless Adventure
 
 *September 2, 2025*
 
-## The Serverless Learning Curve
+## Serverless function
 
 Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
 
 ### What I Built Today
 
 I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
-- When I upload a new learning log to S3
-- Lambda automatically processes it
-- Updates my learning index
+- When a Markdown file is uploaded to S3
+- Lambda processes it
+- Writes a metadata file
 
 ### The "Magic" Moment
 
@@ -1354,14 +1295,8 @@ exports.handler = async (event) => {
 - **Environment variables** are much easier to manage than I thought
 - **IAM roles** are crucial - spent 2 hours debugging permissions!
 
-### Next Steps
-
-- Learn about EventBridge for more complex event routing
-- Experiment with different Lambda runtimes
-- Figure out how to handle errors gracefully
-
-*Serverless is definitely the future, but it requires a different way of thinking!*`,
-                tags: ['#learning', '#serverless', '#lambda', '#automation']
+`,
+                tags: ['#serverless', '#lambda', '#automation']
             },
             {
                 name: 'frontend-deployment-joy.md',
@@ -1424,14 +1359,8 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
 - **Code splitting**: Automatic JavaScript bundling
 - **Compression**: Gzip enabled by default
 
-### What's Next
-
-- Set up staging environment for testing
-- Learn about Amplify's authentication features
-- Experiment with server-side rendering
-
-*This is exactly how modern web development should feel - simple, fast, and reliable!*`,
-                tags: ['#learning', '#frontend', '#deployment', '#amplify']
+*Plain HTML, CSS, and JavaScript. No build step.*`,
+                tags: ['#frontend', '#deployment', '#amplify']
             }
         ];
 
