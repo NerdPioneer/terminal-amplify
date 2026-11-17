@@ -7,7 +7,7 @@ Terminal-style journal by [Ezekiel Obeisun Jr](https://github.com/NerdPioneer), 
 The interface is HTML, CSS, and JavaScript. Open `frontend/index.html` in a browser. There is no install or build step.
 
 - A command line with history (up/down arrows) and Tab completion
-- Commands that answer from the page itself: `help`, `logs`, `cat`, `projects`, `contact`, `status`, `tree`, `theme`, `clear`, `date`, `pwd`, `who`, `uname`, `echo`, `version`, `uptime`, `history`, `neofetch`, `matrix`, `weather`, `joke`, and `rss`. `help` lists aliases (`ls`, `cls`, `proj`, and others). None of these call AWS
+- Commands that answer from the page itself: `help`, `logs`, `cat`, `projects`, `contact`, `status`, `tree`, `theme`, `clear`, `date`, `pwd`, `who`, `uname`, `echo`, `version`, `uptime`, `history`, `neofetch`, and `rss`. `help` lists aliases (`ls`, `cls`, `proj`, and others). None of these call AWS
 - A desktop sidebar and a shorter mobile list of three sample entries, both hardcoded in `frontend/script.js`
 - Light and dark themes, a fullscreen toggle, and layouts for desktop and narrow screens
 

@@ -77,12 +77,8 @@ class TerminalJournal {
     initializeTerminal() {
         // Add authentic terminal startup sequence with realistic timing
         const startupSequence = [
-            { text: 'NerdPioneer Terminal v3.0 - Initializing...', type: 'system', delay: 0 },
-            { text: 'Loading configuration...', type: 'system', delay: 800 },
-            { text: 'Mounting file systems...', type: 'system', delay: 1600 },
-            { text: 'Starting services...', type: 'system', delay: 2400 },
-            { text: 'Terminal ready. Type "help" for available commands.', type: 'success', delay: 3200 },
-            { text: 'Connected to user@bunker', type: 'info', delay: 4000 }
+            { text: 'Terminal Journal', type: 'system', delay: 0 },
+            { text: 'Ready. Type "help" for commands.', type: 'success', delay: 400 }
         ];
 
         startupSequence.forEach(({ text, type, delay }) => {
@@ -91,12 +87,9 @@ class TerminalJournal {
             }, delay);
         });
 
-        // Add final welcome message after startup
         setTimeout(() => {
-            this.addCommandOutput('info', 'Welcome to Terminal Journal.');
-            // Focus input after startup is complete
             document.getElementById('commandInput').focus();
-        }, 5000);
+        }, 500);
     }
 
     handleKeyDown(e) {
@@ -188,7 +181,7 @@ class TerminalJournal {
             case 'ver':
                 return {
                     type: 'info',
-                    content: 'Terminal Journal v3.0 - Modern Web Terminal Interface'
+                    content: 'Terminal Journal v3.0'
                 };
             case 'date':
             case 'time':
@@ -205,22 +198,6 @@ class TerminalJournal {
                 return {
                     type: 'neofetch',
                     content: this.getNeofetchContent()
-                };
-            case 'matrix':
-                return {
-                    type: 'matrix',
-                    content: this.getMatrixContent()
-                };
-            case 'weather':
-                return {
-                    type: 'weather',
-                    content: this.getWeatherContent()
-                };
-            case 'joke':
-            case 'fun':
-                return {
-                    type: 'joke',
-                    content: this.getJokeContent()
                 };
             case 'projects':
             case 'proj':
@@ -279,7 +256,7 @@ class TerminalJournal {
             case 'uname':
                 return {
                     type: 'info',
-                    content: 'TerminalOS 1.0.0 x86_64'
+                    content: 'Terminal Journal, browser'
                 };
             case 'echo':
                 return {
@@ -385,15 +362,7 @@ class TerminalJournal {
                         <li><strong>projects/proj</strong> - Projects</li>
                         <li><strong>contact/social</strong> - Contact information</li>
                         <li><strong>rss/feed</strong> - RSS feed information</li>
-                    </ul>
-                </div>
-                <div class="help-section">
-                    <h4>Fun & Interactive</h4>
-                    <ul>
-                        <li><strong>neofetch</strong> - System information display</li>
-                        <li><strong>matrix</strong> - Matrix-style animation</li>
-                        <li><strong>weather</strong> - Weather information</li>
-                        <li><strong>joke/fun</strong> - Random joke</li>
+                        <li><strong>neofetch</strong> - Host summary</li>
                         <li><strong>echo</strong> - Display text</li>
                     </ul>
                 </div>
@@ -451,86 +420,16 @@ class TerminalJournal {
     getNeofetchContent() {
         return `
             <div class="neofetch">
-                <div class="neofetch-left">
-                    <pre>
-    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
-    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
-       ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
-       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
-       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
-       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
-                    </pre>
-                </div>
                 <div class="neofetch-right">
-                    <p><strong>OS:</strong> TerminalOS 1.0.0 x86_64</p>
                     <p><strong>Host:</strong> terminal-amplify</p>
-                    <p><strong>Kernel:</strong> 5.4.0-74-generic</p>
-                    <p><strong>Uptime:</strong> ${this.getUptime()}</p>
                     <p><strong>Shell:</strong> Terminal Journal v3.0</p>
                     <p><strong>Theme:</strong> ${this.currentTheme}</p>
-                    <p><strong>Terminal:</strong> Web Terminal</p>
-                    <p><strong>CPU:</strong> Intel i7-12700K</p>
-                    <p><strong>Memory:</strong> 32GB DDR4</p>
-                    <p><strong>GPU:</strong> RTX 3080</p>
+                    <p><strong>Terminal:</strong> browser</p>
+                    <p><strong>Uptime:</strong> ${this.getUptime()}</p>
                 </div>
             </div>
         `;
     }
-
-    getMatrixContent() {
-        return `
-            <div class="matrix-container">
-                <pre class="matrix-text">
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-                </pre>
-                <p><em>Matrix mode activated! Welcome to the digital realm.</em></p>
-            </div>
-        `;
-    }
-
-    getWeatherContent() {
-        const weatherData = [
-            "☀️ Sunny - 72°F (22°C)",
-            "⛅ Partly Cloudy - 68°F (20°C)",
-            "🌧️ Light Rain - 65°F (18°C)",
-            "❄️ Snow - 32°F (0°C)",
-            "🌤️ Clear - 75°F (24°C)"
-        ];
-        const randomWeather = weatherData[Math.floor(Math.random() * weatherData.length)];
-        return `
-            <h3>Current Weather</h3>
-            <p><strong>Location:</strong> Terminal City</p>
-            <p><strong>Condition:</strong> ${randomWeather}</p>
-            <p><strong>Humidity:</strong> 45%</p>
-            <p><strong>Wind:</strong> 5 mph NW</p>
-            <p><strong>Visibility:</strong> 10 miles</p>
-            <p><em>Weather data simulated for terminal environment</em></p>
-        `;
-    }
-
-    getJokeContent() {
-        const jokes = [
-            "Why do programmers prefer dark mode? Because light attracts bugs! 🐛",
-            "How many programmers does it take to change a light bulb? None, that's a hardware problem! 💡",
-            "Why don't programmers like nature? It has too many bugs! 🌿",
-            "What do you call a programmer from Finland? Nerdic! 🇫🇮",
-            "Why did the programmer quit his job? He didn't get arrays! 📊",
-            "What's a programmer's favorite hangout place? The Foo Bar! 🍺",
-            "Why do Java developers wear glasses? Because they can't C#! 👓",
-            "What do you call a programmer who doesn't comment their code? A silent partner! 🤐"
-        ];
-        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-        return `
-            <h3>Random Joke</h3>
-            <p>${randomJoke}</p>
-            <p><em>Type 'joke' for another one!</em></p>
-        `;
-    }
-
 
     getProjectsContent() {
         return `
@@ -550,19 +449,19 @@ class TerminalJournal {
             <h3>Contact Information</h3>
             <div class="contact-grid">
                 <div class="contact-item">
-                    <strong>🌐 Website:</strong> <a href="https://1percentnerd.com" target="_blank" rel="noopener">1percentnerd.com</a>
+                    <strong>Website:</strong> <a href="https://1percentnerd.com" target="_blank" rel="noopener">1percentnerd.com</a>
                 </div>
                 <div class="contact-item">
-                    <strong>📧 Email:</strong> hello@1percentnerd.com
+                    <strong>Email:</strong> hello@1percentnerd.com
                 </div>
                 <div class="contact-item">
-                    <strong>💼 LinkedIn:</strong> <a href="https://linkedin.com/in/ezekiel-obeisun" target="_blank" rel="noopener">linkedin.com/in/ezekiel-obeisun</a>
+                    <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/ezekiel-obeisun" target="_blank" rel="noopener">linkedin.com/in/ezekiel-obeisun</a>
                 </div>
                 <div class="contact-item">
-                    <strong>🐙 GitHub:</strong> <a href="https://github.com/NerdPioneer" target="_blank" rel="noopener">github.com/NerdPioneer</a>
+                    <strong>GitHub:</strong> <a href="https://github.com/NerdPioneer" target="_blank" rel="noopener">github.com/NerdPioneer</a>
                 </div>
                 <div class="contact-item">
-                    <strong>🐦 Twitter:</strong> <a href="https://twitter.com/nerdpioneer" target="_blank" rel="noopener">@nerdpioneer</a>
+                    <strong>Twitter:</strong> <a href="https://twitter.com/nerdpioneer" target="_blank" rel="noopener">@nerdpioneer</a>
                 </div>
             </div>
         `;
@@ -659,7 +558,7 @@ terminal-amplify/
         const commands = [
             'help', 'clear', 'cls', 'logs', 'list', 'ls', 'rss', 'feed',
             'status', 'ps', 'theme', 'version', 'ver', 'date', 'time', 'uptime', 'neofetch',
-            'matrix', 'weather', 'joke', 'fun', 'projects', 'proj',
+            'projects', 'proj',
             'contact', 'social', 'history', 'hist', 'tree', 'cat', 'pwd', 'who', 'uname', 'echo'
         ];
         const value = input.value.toLowerCase();
@@ -838,12 +737,7 @@ exports.handler = async (event) => {
             
             // Get icon based on log type
             const getLogIcon = (tags) => {
-                if (tags.includes('#aws')) return '☁️';
-                if (tags.includes('#lambda')) return '⚡';
-                if (tags.includes('#amplify')) return '🚀';
-                if (tags.includes('#security')) return '🔒';
-                if (tags.includes('#networking')) return '🌐';
-                return '📝';
+                return '';
             };
             
             logFileItem.innerHTML = `
@@ -1275,12 +1169,7 @@ exports.handler = async (event) => {
             
             // Get icon based on log type
             const getLogIcon = (tags) => {
-                if (tags.includes('#aws')) return '☁️';
-                if (tags.includes('#lambda')) return '⚡';
-                if (tags.includes('#amplify')) return '🚀';
-                if (tags.includes('#security')) return '🔒';
-                if (tags.includes('#networking')) return '🌐';
-                return '📝';
+                return '';
             };
             
             logItem.innerHTML = `
