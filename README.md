@@ -1,172 +1,83 @@
 # Terminal Journal
 
-A digital learning journal that documents my cybersecurity journey through an interactive terminal interface. This project helps me track my progress, share my learning experiences, and build a portfolio that grows with my skills.
+Terminal-style journal and portfolio by [Ezekiel Obeisun Jr](https://github.com/NerdPioneer), a cybersecurity professional. The working piece is a static web terminal for notes, project summaries, and contact details. A Lambda function that would index Markdown logs in S3 is in the repository and is not deployed.
 
-## 🎯 Why This Project?
+## What works today
 
-As someone transitioning co cybersecurity, I needed a way to:
-- **Document my learning journey** in a structured, searchable format
-- **Showcase my growing skills** to potential employers and peers
-- **Practice with real-world tools** like cloud platforms and automation
-- **Build something I'm proud of** while learning new technologies
+The interface in `frontend/` is HTML, CSS, and JavaScript. Open `frontend/index.html` in a browser. There is no install or build step.
 
-This terminal-style interface makes my learning journey feel more authentic and engaging, like I'm actually working in the field I'm studying for.
+- A command line with history (up/down arrows) and Tab completion
+- Commands that answer from the page itself: `help`, `logs`, `cat <filename>`, `projects`, `contact`, `status`, `tree`, `theme`, `clear`, `date`, `pwd`, `who`, `uname`, `echo`, `version`, `uptime`, `history`, `neofetch`, `matrix`, `weather`, `joke`, and `rss`. `help` lists aliases (`ls`, `cls`, `proj`, and others). None of these call AWS
+- A desktop sidebar and a shorter mobile list of sample entries, both hardcoded in `frontend/script.js`
+- Light and dark themes, a fullscreen toggle, and layouts for desktop and narrow screens
 
-## 🛠️ How It Works
+`cat` only recognizes three hardcoded names: `vpc-setup.md`, `lambda-deployment.md`, and `amplify-setup.md`. Those names differ from the files in `logs/` and from the titles in the sidebar.
 
-### The Interface
-- **Terminal Look**: Designed to look like a real command-line interface that cybersecurity professionals use daily
-- **Interactive Commands**: Type commands like `help`, `logs`, `skills` to explore my journey
-- **File Browser**: Click on log files in the sidebar to read about my learning experiences
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
+`logs/` holds three sample Markdown entries. They stay in the repository. The page does not read them.
 
-### Behind the Scenes
-- **Cloud Storage**: My learning logs are stored securely in Amazon S3 with encryption
-- **Automatic Processing**: AWS Lambda automatically processes new entries and updates metadata
-- **Smart Organization**: The system categorizes my skills and projects based on what I'm learning
-- **Secure Access**: S3 signed URLs ensure only authorized users can access private content
-- **Global Delivery**: CloudFront CDN makes the site fast worldwide
+`lambda/generateMetadata.js` is a Node.js 18 handler. With `LOGS_BUCKET_NAME` set, it lists the `logs/` prefix, keeps `.md` objects, and writes `metadata/metadata.json` to the same bucket. The handler ignores its invocation event. It does not issue signed URLs, and the frontend does not call it. This repository does not deploy the function.
 
-### Why This Approach?
-I chose to build this as a web application because:
-- **Accessibility**: Anyone can view it without special software
-- **Real-world Skills**: I'm learning cloud platforms, automation, and web development
-- **Portfolio Building**: It demonstrates my technical abilities to potential employers
-- **Scalability**: As I learn more, the system can grow with my knowledge
+The root `package.json` still lists `react-scripts`. There is no React application here. The site that runs is `frontend/`.
 
-## 🔒 AWS Backend & Security
+## What is still planned
 
-This project will be powered by Amazon Web Services (AWS) to provide enterprise-grade security and scalability:
+These pieces are described in the repo and are not running anywhere from this code:
 
-### Planned AWS Architecture
-- **AWS Amplify**: Hosts the frontend website with automatic deployments
-- **AWS Lambda**: Processes and organizes my learning logs automatically
-- **Amazon S3**: Securely stores my learning journal files and metadata
-- **S3 Signed URLs**: Provides secure, time-limited access to private content
-- **AWS IAM**: Manages permissions and access control
-- **CloudFront CDN**: Delivers content fast and securely worldwide
+- An S3 bucket for journal files, a deployed Lambda, an EventBridge rule, IAM roles, CloudFront, and an Amplify app
+- `amplify.yml`, a static-site build spec that publishes the `frontend/` directory once an Amplify app is connected
+- A real deploy step in `.github/workflows/deploy.yml`. The job is written to install Lambda dependencies with `npm ci`, zip the function, upload that zip as a workflow artifact, and then "deploy." The step named "Deploy to AWS" only prints a message and does not call AWS. `lambda/` has no lockfile, so `npm ci` cannot succeed as written and the job does not publish anything
+- Loading `logs/` or `metadata.json` in the browser. New Markdown files do not appear in the terminal until the UI is changed to read them
+- Private-object access through S3 signed URLs, encryption and backup configuration, and a CDN
 
-### Security Features
-- **Encrypted Storage**: All files encrypted at rest in S3
-- **Secure Access**: Signed URLs prevent unauthorized access to private content
-- **Role-Based Permissions**: Lambda functions have minimal required permissions
-- **HTTPS Everywhere**: All traffic encrypted in transit
-- **Regular Backups**: Automated backups of all learning data
+The intended flow, after that work lands: store journal Markdown in S3, invoke the metadata Lambda from EventBridge, have the function refresh `metadata/metadata.json`, and have the terminal read that index. Hosting would serve `frontend/` (Amplify is the host named in `amplify.yml`). The handler would also need to honor the event instead of scanning the whole prefix. None of that is wired up.
 
-### Why AWS?
-- **Industry Standard**: Most companies use AWS, so I'm learning real-world skills
-- **Security First**: AWS provides enterprise-grade security features
-- **Cost Effective**: Pay only for what I use as a student
-- **Scalable**: Can handle growth from personal project to professional portfolio
-- **Learning Opportunity**: Hands-on experience with cloud security and architecture
+The sample entries under `logs/` are written in the voice of completed setup notes (VPC, Lambda, Amplify). Treat them as sample journal copy. They are not a record of resources this repository deploys.
 
-## 📁 What's Inside
+## Layout
 
 ```
 terminal-amplify/
-├── frontend/                 # The main website
-│   ├── index.html           # The terminal interface you see
-│   ├── styles.css           # How it looks (colors, fonts, layout)
-│   └── script.js            # What makes it interactive
-├── logs/                     # My learning journal entries
-│   ├── 2025-09-01-vpc.md    # Example: Learning about cloud networking
-│   ├── 2025-09-02-lambda-deployment.md  # Example: Serverless functions
-│   └── 2025-09-03-amplify-setup.md      # Example: Web hosting
-├── lambda/                   # Automation scripts
-│   ├── generateMetadata.js  # Organizes my learning logs
-│   └── package.json         # Script dependencies
-├── amplify.yml              # Website deployment settings
-├── package.json             # Project dependencies
-└── README.md                # This file
+├── frontend/                      # Static terminal UI
+│   ├── index.html
+│   ├── styles.css
+│   └── script.js
+├── logs/                          # Sample journal Markdown (not loaded by the UI)
+│   ├── 2025-09-01-vpc.md
+│   ├── 2025-09-02-lambda-deployment.md
+│   └── 2025-09-03-amplify-setup.md
+├── lambda/                        # Metadata generator (source only)
+│   ├── generateMetadata.js
+│   └── package.json
+├── .github/workflows/deploy.yml   # CI skeleton; AWS deploy step is a placeholder
+├── amplify.yml                    # Static hosting build spec
+├── package.json                   # Unused React script entries
+└── README.md
 ```
 
-## 🚀 How to Use
+## Run it locally
 
-### For Visitors
-1. Open the website in your browser
-2. Type `help` to see available commands
-3. Click on log files in the right sidebar to read about my learning journey
-4. Try commands like `skills`, `projects`, or `about` to learn more
+1. Clone the repository.
+2. Open `frontend/index.html` in a browser.
+3. Type `help`, or use the buttons under the prompt.
 
-### For Developers
-If you want to run this locally:
-1. Download the project files
-2. Open `frontend/index.html` in your web browser
-3. That's it! No special setup needed
+The Lambda is separate from the local site. Invoking it takes an S3 bucket, `LOGS_BUCKET_NAME`, and AWS credentials, which are outside this repository.
 
-### For My Learning
-I update this project by:
-1. Adding new learning entries to the `logs/` folder
-2. The system automatically organizes and displays them
-3. I can track my progress and share my journey with others
+## Journal files
 
-## 🚧 Development Status
+Files in `logs/` are named `YYYY-MM-DD-topic.md`. Each sample includes the topic, what was done, notes, and follow-ups. That is the shape the indexer is written to scan once a bucket exists.
 
-**Current Phase**: Frontend Development Complete ✅
-- Interactive terminal interface is fully functional
-- All commands and features are working
-- Responsive design works on all devices
-
-**Next Phase**: AWS Backend Integration 🔄
-- Setting up AWS Amplify for hosting
-- Configuring S3 for secure file storage
-- Implementing Lambda functions for automation
-- Adding S3 signed URLs for private content access
-- Setting up CloudFront for global content delivery
-
-**Future Enhancements**: 📋
-- Real-time log processing with EventBridge
-- Advanced security features and monitoring
-- Integration with learning management systems
-- Mobile app version
-
-## 📝 My Learning Journal Format
-
-Each learning entry follows this simple structure:
-
-**File Name**: `YYYY-MM-DD-topic.md` (like `2025-09-01-vpc.md`)
-
-**Content Includes**:
-- **What I learned**: The main topic or skill
-- **How I learned it**: Resources, courses, or hands-on practice
-- **What I built**: Projects or labs I completed
-- **Key insights**: Important concepts I discovered
-- **Next steps**: What I want to learn next
-- **Resources**: Helpful links and references
-
-This format helps me:
-- Track my progress over time
-- Remember what I've learned
-- Share knowledge with others
-- Plan my next learning goals
-
-## 🎓 My Cybersecurity Journey
-
-I'm documenting my transition into cybersecurity through this interactive terminal. Here's what I'm learning:
-
-### Current Focus Areas
-- **Cloud Security**: AWS, Azure, and hybrid cloud environments
-- **Network Security**: Cisco networking, firewalls, and monitoring
-- **Linux Administration**: Command-line skills and system hardening
-- **Python Automation**: Scripting for security tasks and monitoring
-- **Incident Response**: Detecting and responding to security threats
-
-### Learning Approach
-- **Hands-on Practice**: Building real projects and labs
-- **Documentation**: Writing about what I learn to reinforce knowledge
-- **Community**: Sharing my journey to help others and get feedback
-- **Continuous Learning**: Always looking for the next skill to master
-
-## 🤝 Connect With Me
+## Contact
 
 - **Website**: [1percentnerd.com](https://1percentnerd.com)
-- **LinkedIn**: [linkedin.com/in/nerdpioneer](https://linkedin.com/in/nerdpioneer)
+- **LinkedIn**: [linkedin.com/in/ezekiel-obeisun](https://linkedin.com/in/ezekiel-obeisun)
 - **GitHub**: [github.com/NerdPioneer](https://github.com/NerdPioneer)
 
-## 📄 License
+The `contact` command inside the terminal still shows `linkedin.com/in/nerdpioneer`. The current profile is the link above.
 
-This project is open source and available under the MIT License.
+## License
+
+MIT. See [LICENSE](LICENSE).
 
 ---
 
-*"Every log is a step forward. 1% better each day."* - My learning philosophy
+*"Every log is a step forward. 1% better each day."*
