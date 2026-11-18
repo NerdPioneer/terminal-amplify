@@ -1,7 +1,7 @@
 {
   "name": "terminal-journal",
   "version": "1.0.0",
-  "description": "Interactive terminal interface showcasing cloud computing journey",
+  "description": "Static terminal journal and a Lambda function that writes metadata for Markdown logs in S3",
   "main": "src/App.js",
   "scripts": {
     "start": "react-scripts start",

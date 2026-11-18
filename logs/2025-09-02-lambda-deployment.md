@@ -5,14 +5,14 @@
 **Duration:** 3 hours
 
 ## Overview
-Deployed the metadata generation Lambda function and tested its integration with S3. This function will automatically process new log files and generate the metadata.json file.
+Deployed the metadata generation Lambda function and tested it against S3. The function lists Markdown logs and writes `metadata.json`.
 
-## What I Accomplished
-- Created IAM role with S3 read/write permissions
-- Deployed Lambda function using AWS CLI
-- Configured environment variables for S3 bucket name
-- Set up CloudWatch logging for debugging
-- Tested function with sample log files
+## What was deployed
+- IAM role with S3 read/write permissions
+- Lambda function deployed with the AWS CLI
+- Environment variable for the S3 bucket name
+- CloudWatch logging
+- Test invocation with sample log files
 
 ## Technical Details
 - **Runtime:** Node.js 18.x
@@ -20,24 +20,19 @@ Deployed the metadata generation Lambda function and tested its integration with
 - **Timeout:** 30 seconds
 - **Trigger:** EventBridge rule (scheduled)
 
-## Challenges Faced
-- Initial permission issues with S3 access
-- Cold start latency on first invocation
-- JSON formatting in Lambda response
+## Challenges
+- Initial S3 access denied from the execution role
+- Cold start latency on the first invocation
+- JSON formatting in the Lambda response
 
-## Solutions Implemented
-- Created dedicated IAM policy for S3 access
-- Added provisioned concurrency for consistent performance
-- Implemented proper error handling and logging
+## Changes made
+- Dedicated IAM policy for S3 access
+- Provisioned concurrency for stable latency
+- Error handling and logging
 
-## Next Steps
-- Set up EventBridge rule for automatic triggering
-- Implement error handling for malformed log files
-- Add CloudWatch alarms for monitoring
-
-## Code Snippets
+## Code
 ```javascript
-// Key function for S3 object listing
+// S3 object listing
 const listParams = {
     Bucket: bucketName,
     Prefix: 'logs/'

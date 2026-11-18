@@ -5,50 +5,44 @@
 **Duration:** 2.5 hours
 
 ## Overview
-Set up AWS Amplify to host the terminal-style frontend interface. This provides a scalable, serverless hosting solution with automatic deployments from GitHub.
+Amplify app for the static terminal frontend, connected to the GitHub repository, with a custom domain and TLS.
 
-## What I Accomplished
-- Created Amplify app connected to GitHub repository
-- Configured build settings for static site deployment
-- Set up custom domain with SSL certificate
-- Implemented environment-specific configurations
-- Tested deployment pipeline
+## What was configured
+- Amplify app connected to the GitHub repository
+- Build settings for the static site
+- Custom domain and TLS certificate
+- Environment-specific configuration
+- Deployment from the connected repository
 
 ## Amplify Configuration
-- **Framework:** Static Web App
-- **Build Command:** `npm run build` (placeholder)
+- **Framework:** Static web app
+- **Build Command:** `npm run build`
 - **Output Directory:** `frontend/`
 - **Node Version:** 18.x
 
 ## Build Process
-1. Clone repository from GitHub
-2. Install dependencies (if any)
+1. Clone the repository from GitHub
+2. Install dependencies, if any
 3. Build frontend assets
-4. Deploy to S3 + CloudFront
+4. Deploy to S3 and CloudFront
 5. Update DNS records
 
-## Performance Optimizations
-- Enabled CloudFront CDN for global distribution
-- Configured caching headers for static assets
-- Implemented gzip compression
-- Set up custom error pages
+## Performance
+- CloudFront distribution
+- Cache headers on static assets
+- Gzip compression
+- Custom error pages
 
-## Security Considerations
-- HTTPS enforcement
-- Security headers configuration
-- CORS settings for API calls
-- Environment variable management
+## Security
+- HTTPS
+- Security headers
+- CORS for API calls
+- Environment variable handling
 
-## Monitoring Setup
-- CloudWatch integration for logs
+## Monitoring
+- CloudWatch logs
 - Performance monitoring
 - Error tracking and alerting
-
-## Next Steps
-- Set up CI/CD pipeline with GitHub Actions
-- Implement automated testing
-- Add performance monitoring
-- Configure custom error handling
 
 ## Resources
 - [AWS Amplify Documentation](https://docs.amplify.aws/)

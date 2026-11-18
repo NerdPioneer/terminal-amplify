@@ -77,12 +77,8 @@ class TerminalJournal {
     initializeTerminal() {
         // Add authentic terminal startup sequence with realistic timing
         const startupSequence = [
-            { text: 'NerdPioneer Terminal v3.0 - Initializing...', type: 'system', delay: 0 },
-            { text: 'Loading configuration...', type: 'system', delay: 800 },
-            { text: 'Mounting file systems...', type: 'system', delay: 1600 },
-            { text: 'Starting services...', type: 'system', delay: 2400 },
-            { text: 'Terminal ready. Type "help" for available commands.', type: 'success', delay: 3200 },
-            { text: 'Connected to user@bunker', type: 'info', delay: 4000 }
+            { text: 'Terminal Journal', type: 'system', delay: 0 },
+            { text: 'Ready. Type "help" for commands.', type: 'success', delay: 400 }
         ];
 
         startupSequence.forEach(({ text, type, delay }) => {
@@ -91,12 +87,9 @@ class TerminalJournal {
             }, delay);
         });
 
-        // Add final welcome message after startup
         setTimeout(() => {
-            this.addCommandOutput('info', 'Welcome to your learning journey terminal!');
-            // Focus input after startup is complete
             document.getElementById('commandInput').focus();
-        }, 5000);
+        }, 500);
     }
 
     handleKeyDown(e) {
@@ -188,7 +181,7 @@ class TerminalJournal {
             case 'ver':
                 return {
                     type: 'info',
-                    content: 'Terminal Journal v3.0 - Modern Web Terminal Interface'
+                    content: 'Terminal Journal v3.0'
                 };
             case 'date':
             case 'time':
@@ -205,22 +198,6 @@ class TerminalJournal {
                 return {
                     type: 'neofetch',
                     content: this.getNeofetchContent()
-                };
-            case 'matrix':
-                return {
-                    type: 'matrix',
-                    content: this.getMatrixContent()
-                };
-            case 'weather':
-                return {
-                    type: 'weather',
-                    content: this.getWeatherContent()
-                };
-            case 'joke':
-            case 'fun':
-                return {
-                    type: 'joke',
-                    content: this.getJokeContent()
                 };
             case 'projects':
             case 'proj':
@@ -279,7 +256,7 @@ class TerminalJournal {
             case 'uname':
                 return {
                     type: 'info',
-                    content: 'TerminalOS 1.0.0 x86_64'
+                    content: 'Terminal Journal, browser'
                 };
             case 'echo':
                 return {
@@ -373,7 +350,7 @@ class TerminalJournal {
                 <div class="help-section">
                     <h4>File & Content</h4>
                     <ul>
-                        <li><strong>logs/ls/list</strong> - View journey logs</li>
+                        <li><strong>logs/ls/list</strong> - List log files</li>
                         <li><strong>tree</strong> - Display directory structure</li>
                         <li><strong>cat</strong> - Display file contents</li>
                         <li><strong>history/hist</strong> - Command history</li>
@@ -382,18 +359,10 @@ class TerminalJournal {
                 <div class="help-section">
                     <h4>Information</h4>
                     <ul>
-                        <li><strong>projects/proj</strong> - Current projects</li>
+                        <li><strong>projects/proj</strong> - Projects</li>
                         <li><strong>contact/social</strong> - Contact information</li>
                         <li><strong>rss/feed</strong> - RSS feed information</li>
-                    </ul>
-                </div>
-                <div class="help-section">
-                    <h4>Fun & Interactive</h4>
-                    <ul>
-                        <li><strong>neofetch</strong> - System information display</li>
-                        <li><strong>matrix</strong> - Matrix-style animation</li>
-                        <li><strong>weather</strong> - Weather information</li>
-                        <li><strong>joke/fun</strong> - Random joke</li>
+                        <li><strong>neofetch</strong> - Host summary</li>
                         <li><strong>echo</strong> - Display text</li>
                     </ul>
                 </div>
@@ -411,11 +380,11 @@ class TerminalJournal {
 
     getLogsContent() {
         return `
-            <h3>Recent Learning Journey Logs:</h3>
+            <h3>Logs</h3>
             <div class="log-entries">
                 <div class="log-entry">
                     <span class="log-date">2025-02-20</span>
-                    <span class="log-title">CompTIA Project+ Certification Completed</span>
+                    <span class="log-title">CompTIA Project+ Certification</span>
                     <span class="log-status completed">Certified</span>
                 </div>
                 <div class="log-entry">
@@ -424,22 +393,17 @@ class TerminalJournal {
                     <span class="log-status completed">Completed</span>
                 </div>
                 <div class="log-entry">
-                    <span class="log-date">2025-02-10</span>
-                    <span class="log-title">CCNA Routing & Switching Labs (OSPF, EIGRP)</span>
-                    <span class="log-status completed">Completed</span>
-                </div>
-                <div class="log-entry">
                     <span class="log-date">2025-01-28</span>
                     <span class="log-title">Interactive Terminal Portfolio Module</span>
-                    <span class="log-status completed">Deployed</span>
+                    <span class="log-status completed">Completed</span>
                 </div>
                 <div class="log-entry">
                     <span class="log-date">2025-01-12</span>
-                    <span class="log-title">AWS SysOps Administrator Concepts Study</span>
+                    <span class="log-title">AWS SysOps Administrator</span>
                     <span class="log-status completed">Completed</span>
                 </div>
             </div>
-            <p><em>Total entries: 5 | Last updated: 2025-02-20</em></p>
+            <p><em>Total entries: 4 | Last updated: 2025-02-20</em></p>
         `;
     }
 
@@ -456,108 +420,25 @@ class TerminalJournal {
     getNeofetchContent() {
         return `
             <div class="neofetch">
-                <div class="neofetch-left">
-                    <pre>
-    ████████╗███████╗██████╗ ███╗   ███╗██╗███╗   ██╗ █████╗ ██╗     
-    ╚══██╔══╝██╔════╝██╔══██╗████╗ ████║██║████╗  ██║██╔══██╗██║     
-       ██║   █████╗  ██████╔╝██╔████╔██║██║██╔██╗ ██║███████║██║     
-       ██║   ██╔══╝  ██╔══██╗██║╚██╔╝██║██║██║╚██╗██║██╔══██║██║     
-       ██║   ███████╗██║  ██║██║ ╚═╝ ██║██║██║ ╚████║██║  ██║███████╗
-       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝╚══════╝
-                    </pre>
-                </div>
                 <div class="neofetch-right">
-                    <p><strong>OS:</strong> TerminalOS 1.0.0 x86_64</p>
                     <p><strong>Host:</strong> terminal-amplify</p>
-                    <p><strong>Kernel:</strong> 5.4.0-74-generic</p>
-                    <p><strong>Uptime:</strong> ${this.getUptime()}</p>
                     <p><strong>Shell:</strong> Terminal Journal v3.0</p>
                     <p><strong>Theme:</strong> ${this.currentTheme}</p>
-                    <p><strong>Terminal:</strong> Web Terminal</p>
-                    <p><strong>CPU:</strong> Intel i7-12700K</p>
-                    <p><strong>Memory:</strong> 32GB DDR4</p>
-                    <p><strong>GPU:</strong> RTX 3080</p>
+                    <p><strong>Terminal:</strong> browser</p>
+                    <p><strong>Uptime:</strong> ${this.getUptime()}</p>
                 </div>
             </div>
         `;
     }
-
-    getMatrixContent() {
-        return `
-            <div class="matrix-container">
-                <pre class="matrix-text">
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-01001000 01100101 01101100 01101100 01101111 00100000 01010111 01101111 01110010 01101100 01100100
-                </pre>
-                <p><em>Matrix mode activated! Welcome to the digital realm.</em></p>
-            </div>
-        `;
-    }
-
-    getWeatherContent() {
-        const weatherData = [
-            "☀️ Sunny - 72°F (22°C) - Perfect for coding!",
-            "⛅ Partly Cloudy - 68°F (20°C) - Great weather for learning",
-            "🌧️ Light Rain - 65°F (18°C) - Cozy indoor study weather",
-            "❄️ Snow - 32°F (0°C) - Hot coffee and terminal time",
-            "🌤️ Clear - 75°F (24°C) - Ideal for cloud computing studies"
-        ];
-        const randomWeather = weatherData[Math.floor(Math.random() * weatherData.length)];
-        return `
-            <h3>Current Weather</h3>
-            <p><strong>Location:</strong> Terminal City</p>
-            <p><strong>Condition:</strong> ${randomWeather}</p>
-            <p><strong>Humidity:</strong> 45%</p>
-            <p><strong>Wind:</strong> 5 mph NW</p>
-            <p><strong>Visibility:</strong> 10 miles</p>
-            <p><em>Weather data simulated for terminal environment</em></p>
-        `;
-    }
-
-    getJokeContent() {
-        const jokes = [
-            "Why do programmers prefer dark mode? Because light attracts bugs! 🐛",
-            "How many programmers does it take to change a light bulb? None, that's a hardware problem! 💡",
-            "Why don't programmers like nature? It has too many bugs! 🌿",
-            "What do you call a programmer from Finland? Nerdic! 🇫🇮",
-            "Why did the programmer quit his job? He didn't get arrays! 📊",
-            "What's a programmer's favorite hangout place? The Foo Bar! 🍺",
-            "Why do Java developers wear glasses? Because they can't C#! 👓",
-            "What do you call a programmer who doesn't comment their code? A silent partner! 🤐"
-        ];
-        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-        return `
-            <h3>Random Joke</h3>
-            <p>${randomJoke}</p>
-            <p><em>Type 'joke' for another one!</em></p>
-        `;
-    }
-
 
     getProjectsContent() {
         return `
-            <h3>Current Projects</h3>
+            <h3>Projects</h3>
             <div class="project-list">
                 <div class="project-item">
-                    <h4>Terminal Amplify</h4>
-                    <p>A serverless terminal portfolio built with AWS Amplify, S3, and Lambda</p>
-                    <p><strong>Tech Stack:</strong> AWS, JavaScript, HTML/CSS</p>
-                    <p><strong>Status:</strong> In Development</p>
-                </div>
-                <div class="project-item">
-                    <h4>Cloud Infrastructure Lab</h4>
-                    <p>Building scalable cloud infrastructure with Terraform and Ansible</p>
-                    <p><strong>Tech Stack:</strong> AWS, Terraform, Ansible, Docker</p>
-                    <p><strong>Status:</strong> Planning Phase</p>
-                </div>
-                <div class="project-item">
-                    <h4>Network Monitoring Tool</h4>
-                    <p>Python-based network monitoring and alerting system</p>
-                    <p><strong>Tech Stack:</strong> Python, SNMP, Grafana, InfluxDB</p>
-                    <p><strong>Status:</strong> Research Phase</p>
+                    <h4>Terminal Journal</h4>
+                    <p>Static terminal interface in frontend/: HTML, CSS, and JavaScript.</p>
+                    <p><strong>Tech Stack:</strong> HTML, CSS, JavaScript</p>
                 </div>
             </div>
         `;
@@ -568,19 +449,19 @@ class TerminalJournal {
             <h3>Contact Information</h3>
             <div class="contact-grid">
                 <div class="contact-item">
-                    <strong>🌐 Website:</strong> <a href="https://1percentnerd.com" target="_blank" rel="noopener">1percentnerd.com</a>
+                    <strong>Website:</strong> <a href="https://1percentnerd.com" target="_blank" rel="noopener">1percentnerd.com</a>
                 </div>
                 <div class="contact-item">
-                    <strong>📧 Email:</strong> hello@1percentnerd.com
+                    <strong>Email:</strong> hello@1percentnerd.com
                 </div>
                 <div class="contact-item">
-                    <strong>💼 LinkedIn:</strong> <a href="https://linkedin.com/in/nerdpioneer" target="_blank" rel="noopener">linkedin.com/in/nerdpioneer</a>
+                    <strong>LinkedIn:</strong> <a href="https://linkedin.com/in/ezekiel-obeisun" target="_blank" rel="noopener">linkedin.com/in/ezekiel-obeisun</a>
                 </div>
                 <div class="contact-item">
-                    <strong>🐙 GitHub:</strong> <a href="https://github.com/NerdPioneer" target="_blank" rel="noopener">github.com/NerdPioneer</a>
+                    <strong>GitHub:</strong> <a href="https://github.com/NerdPioneer" target="_blank" rel="noopener">github.com/NerdPioneer</a>
                 </div>
                 <div class="contact-item">
-                    <strong>🐦 Twitter:</strong> <a href="https://twitter.com/nerdpioneer" target="_blank" rel="noopener">@nerdpioneer</a>
+                    <strong>Twitter:</strong> <a href="https://twitter.com/nerdpioneer" target="_blank" rel="noopener">@nerdpioneer</a>
                 </div>
             </div>
         `;
@@ -620,15 +501,8 @@ terminal-amplify/
 │   ├── 2025-09-01-vpc.md
 │   ├── 2025-09-02-lambda-deployment.md
 │   └── 2025-09-03-amplify-setup.md
-├── src/
-│   ├── App.js
-│   ├── components/
-│   │   └── Terminal.jsx
-│   └── assets/
-│       ├── styles.css
-│       └── terminal.js
-├── public/
-│   └── index.html
+├── .github/workflows/
+│   └── deploy.yml
 ├── amplify.yml
 ├── package.json
 └── README.md
@@ -644,14 +518,11 @@ terminal-amplify/
             <p><strong>Last Updated:</strong> 2025-02-20</p>
             <p><strong>Recent Posts:</strong></p>
             <ul>
-                <li>CompTIA Project+ Certification Completed</li>
-                <li>Building Defense-Grade Networks</li>
+                <li>CompTIA Project+ Certification</li>
                 <li>Hardened Ubuntu VM Against CIS Benchmarks</li>
-                <li>CCNA Routing & Switching Labs (OSPF, EIGRP)</li>
                 <li>Terminal Portfolio v2.1 Released</li>
-                <li>AWS SysOps Study Notes</li>
+                <li>AWS SysOps Administrator notes</li>
             </ul>
-            <p><em>Subscribe to stay updated on my learning journey!</em></p>
         `;
     }
 
@@ -687,7 +558,7 @@ terminal-amplify/
         const commands = [
             'help', 'clear', 'cls', 'logs', 'list', 'ls', 'rss', 'feed',
             'status', 'ps', 'theme', 'version', 'ver', 'date', 'time', 'uptime', 'neofetch',
-            'matrix', 'weather', 'joke', 'fun', 'projects', 'proj',
+            'projects', 'proj',
             'contact', 'social', 'history', 'hist', 'tree', 'cat', 'pwd', 'who', 'uname', 'echo'
         ];
         const value = input.value.toLowerCase();
@@ -749,182 +620,110 @@ terminal-amplify/
         const logFilesList = document.getElementById('logFilesList');
         const sampleLogFiles = [
             {
-                name: 'learning-aws-vpc.md',
+                name: 'aws-vpc.md',
                 date: '2025-09-01',
-                preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
-                content: `# Learning AWS VPC - My Journey Begins
+                preview: 'Custom VPC with public and private subnets, a NAT gateway, Lambda security groups, and S3 VPC endpoints.',
+                content: `# AWS VPC
 
 *September 1, 2025*
 
-## What I Learned Today
+## Configuration
 
-Today was a breakthrough day! I finally wrapped my head around AWS VPC (Virtual Private Cloud) concepts that had been confusing me for weeks.
-
-### The "Aha!" Moment
-
-The biggest realization was understanding that **VPC is like creating your own private section of AWS**. It's not just about security - it's about having complete control over your network architecture.
-
-### Key Concepts That Clicked
-
-- **CIDR Blocks**: I used to think these were just random numbers, but now I understand they define the IP address range for your VPC
-- **Subnets**: The difference between public and private subnets finally made sense when I visualized them as "rooms" in your VPC "house"
-- **Route Tables**: These are like the "traffic directors" telling data where to go
-
-### What I Built
-
-I set up a basic VPC with:
-- Public subnets for web-facing resources
+Custom VPC for this project:
+- Public subnets for internet-facing resources
 - Private subnets for databases and internal services
-- Security groups that actually make sense (not just random rules!)
+- Internet gateway on the public route tables
+- NAT gateway for outbound traffic from the private subnets
+- Security groups for Lambda
+- VPC endpoints for S3
 
-### Challenges I Faced
+## Notes
 
-- **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
-- **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
-- **Security group rules** - Still learning the difference between inbound and outbound rules
-
-### Tomorrow's Goals
-
-- Set up a NAT Gateway (and budget for it!)
-- Learn about VPC endpoints
-- Experiment with VPC Flow Logs
-
-*This learning journey is getting exciting!*`,
-                tags: ['#learning', '#aws', '#networking', '#breakthrough']
+- **CIDR**: The VPC CIDR is the address range subdivided into subnet CIDRs
+- **Subnets**: Public subnets route 0.0.0.0/0 to an internet gateway. Private subnets do not
+- **Route tables**: Each subnet is associated with one route table
+- **NAT Gateway**: About $45/month plus data processing, required for internet egress from private subnets
+- **Private subnet routing**: A missing default route to the NAT gateway leaves the subnet with no internet path
+- **S3 endpoints**: Gateway endpoints keep S3 traffic on the AWS network
+`,
+                tags: ['#aws', '#vpc', '#networking']
             },
             {
-                name: 'serverless-first-steps.md',
+                name: 'serverless.md',
                 date: '2025-09-02',
-                preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
-                content: `# My First Serverless Adventure
+                preview: 'Node.js Lambda lists Markdown objects in S3 and writes a metadata file. Runtime Node.js 18, 256 MB, 30 second timeout.',
+                content: `# Lambda metadata function
 
 *September 2, 2025*
 
-## The Serverless Learning Curve
+## Behavior
 
-Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
+The function runs when a Markdown object is uploaded to S3:
+- Read the bucket and key from the S3 event
+- Process the object
+- Write a metadata file
 
-### What I Built Today
+## Runtime
 
-I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
-- When I upload a new learning log to S3
-- Lambda automatically processes it
-- Updates my learning index
+- **Pricing**: Duration and memory, billed per invocation
+- **Scaling**: Concurrent executions scale with incoming events
+- **Cold start**: First request after idle can take up to 10 seconds
+- **Memory**: Configured memory, up to 10 GB
+- **Timeout**: Maximum 15 minutes
+- **Debugging**: CloudWatch Logs; there is no host to SSH to
 
-### The "Magic" Moment
-
-Watching my function trigger automatically when I uploaded a file was incredible. No servers to manage, no infrastructure to worry about - just code that runs when needed.
-
-### Lessons Learned
-
-**The Good:**
-- **Pay-per-use pricing** - Only pay when your code actually runs
-- **Automatic scaling** - Handles traffic spikes without thinking about it
-- **No server management** - Focus on code, not infrastructure
-
-**The Challenges:**
-- **Cold starts** - First request can be slow (up to 10 seconds!)
-- **Memory limits** - Only 10GB max, had to optimize my code
-- **Timeout limits** - 15 minutes max execution time
-- **Debugging is harder** - Can't just SSH into a server
-
-### Code I Wrote
+## Handler
 
 \`\`\`javascript
 exports.handler = async (event) => {
-    // Process the uploaded log file
     const bucket = event.Records[0].s3.bucket.name;
     const key = event.Records[0].s3.object.key;
-    
+
     console.log('Processing:', key);
-    // ... rest of the processing logic
 };
 \`\`\`
 
-### What Surprised Me
+## Access
 
-- **Event-driven architecture** is actually pretty elegant once you get it
-- **Environment variables** are much easier to manage than I thought
-- **IAM roles** are crucial - spent 2 hours debugging permissions!
-
-### Next Steps
-
-- Learn about EventBridge for more complex event routing
-- Experiment with different Lambda runtimes
-- Figure out how to handle errors gracefully
-
-*Serverless is definitely the future, but it requires a different way of thinking!*`,
-                tags: ['#learning', '#serverless', '#lambda', '#automation']
+- The execution role needs s3:GetObject and s3:PutObject on the log bucket
+- Bucket name and region are environment variables
+- A missing s3:ListBucket or object permission returns AccessDenied
+`,
+                tags: ['#serverless', '#lambda', '#automation']
             },
             {
                 name: 'frontend-deployment-joy.md',
                 date: '2025-09-03',
-                preview: 'Deployed my first frontend to AWS Amplify! The CI/CD pipeline is like having a personal DevOps engineer...',
-                content: `# Frontend Deployment Made Simple
+                preview: 'Static HTML, CSS, and JavaScript hosted on Amplify, served through CloudFront with TLS from ACM.',
+                content: `# Amplify static hosting
 
 *September 3, 2025*
 
-## From Localhost to Production
+## Deploy
 
-Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed at how smooth the process was. Coming from manual FTP uploads, this feels like magic.
+1. Edit the terminal files
+2. \`git push origin main\`
+3. Amplify builds from the connected repository
+4. The site is served from the CloudFront distribution, typically within a few minutes
 
-### The Amplify Experience
+## Hosting
 
-**What I Love:**
-- **Git-based deployment** - Push to GitHub, automatically deploys
-- **Built-in CI/CD** - No need to set up Jenkins or GitHub Actions
-- **Custom domains** - Easy SSL certificate management
-- **Performance optimization** - Automatic image optimization and compression
+- Git push on the connected branch starts a build
+- Each deployment is a separate Amplify job
+- CloudFront is the CDN
+- TLS certificate is issued through AWS Certificate Manager
+- **Framework**: HTML, CSS, and JavaScript, no application build
+- **Custom domain**: terminal.1percentnerd.com
 
-### My Deployment Workflow
+## Build and cache
 
-1. **Code locally** - Make changes to my terminal interface
-2. **Commit and push** - \`git push origin main\`
-3. **Watch the magic** - Amplify automatically builds and deploys
-4. **Test in production** - Usually live within 2-3 minutes
-
-### What I Learned About Frontend Hosting
-
-**Before Amplify:**
-- Manual file uploads via FTP
-- No version control for deployments
-- Manual SSL certificate management
-- No performance optimization
-
-**With Amplify:**
-- Everything is automated
-- Every deployment is tracked
-- Built-in CDN for global performance
-- Automatic HTTPS
-
-### The Technical Details
-
-- **Framework**: Plain HTML/CSS/JavaScript (no build process needed)
-- **Custom Domain**: terminal.1percentnerd.com
-- **CDN**: CloudFront distribution included
-- **SSL**: Automatic certificate from AWS Certificate Manager
-
-### Challenges I Overcame
-
-- **Build failures** - Had to learn about build specifications
-- **Environment variables** - Took time to understand how to pass them
-- **Caching issues** - Learned about cache invalidation strategies
-
-### Performance Wins
-
-- **Page load time**: Under 2 seconds globally
-- **Image optimization**: Automatic WebP conversion
-- **Code splitting**: Automatic JavaScript bundling
-- **Compression**: Gzip enabled by default
-
-### What's Next
-
-- Set up staging environment for testing
-- Learn about Amplify's authentication features
-- Experiment with server-side rendering
-
-*This is exactly how modern web development should feel - simple, fast, and reliable!*`,
-                tags: ['#learning', '#frontend', '#deployment', '#amplify']
+- The build spec is amplify.yml
+- Environment variables are set on the Amplify app, not in the repository
+- CloudFront caches static assets until an invalidation or a TTL expiry
+- Gzip is enabled
+- Recorded page load is under 2 seconds
+`,
+                tags: ['#frontend', '#deployment', '#amplify']
             }
         ];
 
@@ -938,12 +737,7 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
             
             // Get icon based on log type
             const getLogIcon = (tags) => {
-                if (tags.includes('#aws')) return '☁️';
-                if (tags.includes('#lambda')) return '⚡';
-                if (tags.includes('#amplify')) return '🚀';
-                if (tags.includes('#security')) return '🔒';
-                if (tags.includes('#networking')) return '🌐';
-                return '📝';
+                return '';
             };
             
             logFileItem.innerHTML = `
@@ -1042,7 +836,7 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
                 content: `# VPC Setup Log - 2025-09-01
 
 ## Overview
-Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
+VPC layout notes for the terminal-amplify project.
 
 ## Architecture
 - **VPC CIDR**: 10.0.0.0/16
@@ -1055,10 +849,7 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
 - **App Tier**: Allow traffic from Web Tier only
 - **DB Tier**: Allow traffic from App Tier only
 
-## Next Steps
-- Configure NAT Gateway for private subnet internet access
-- Set up VPC endpoints for S3 access
-- Implement VPC Flow Logs for monitoring`,
+`,
                 tags: ['#aws', '#vpc', '#networking', '#security']
             },
             {
@@ -1256,182 +1047,110 @@ Setting up a comprehensive VPC infrastructure for the terminal-amplify project.
 
         const logFiles = [
             {
-                name: 'learning-aws-vpc.md',
+                name: 'aws-vpc.md',
                 date: '2025-09-01',
-                preview: 'Today I dove deep into AWS VPC concepts. Finally understanding the difference between public and private subnets...',
-                content: `# Learning AWS VPC - My Journey Begins
+                preview: 'Custom VPC with public and private subnets, a NAT gateway, Lambda security groups, and S3 VPC endpoints.',
+                content: `# AWS VPC
 
 *September 1, 2025*
 
-## What I Learned Today
+## Configuration
 
-Today was a breakthrough day! I finally wrapped my head around AWS VPC (Virtual Private Cloud) concepts that had been confusing me for weeks.
-
-### The "Aha!" Moment
-
-The biggest realization was understanding that **VPC is like creating your own private section of AWS**. It's not just about security - it's about having complete control over your network architecture.
-
-### Key Concepts That Clicked
-
-- **CIDR Blocks**: I used to think these were just random numbers, but now I understand they define the IP address range for your VPC
-- **Subnets**: The difference between public and private subnets finally made sense when I visualized them as "rooms" in your VPC "house"
-- **Route Tables**: These are like the "traffic directors" telling data where to go
-
-### What I Built
-
-I set up a basic VPC with:
-- Public subnets for web-facing resources
+Custom VPC for this project:
+- Public subnets for internet-facing resources
 - Private subnets for databases and internal services
-- Security groups that actually make sense (not just random rules!)
+- Internet gateway on the public route tables
+- NAT gateway for outbound traffic from the private subnets
+- Security groups for Lambda
+- VPC endpoints for S3
 
-### Challenges I Faced
+## Notes
 
-- **NAT Gateway costs** - Ouch! $45/month just for internet access in private subnets
-- **Route table confusion** - Took me 3 hours to figure out why my private subnet couldn't reach the internet
-- **Security group rules** - Still learning the difference between inbound and outbound rules
-
-### Tomorrow's Goals
-
-- Set up a NAT Gateway (and budget for it!)
-- Learn about VPC endpoints
-- Experiment with VPC Flow Logs
-
-*This learning journey is getting exciting!*`,
-                tags: ['#learning', '#aws', '#networking', '#breakthrough']
+- **CIDR**: The VPC CIDR is the address range subdivided into subnet CIDRs
+- **Subnets**: Public subnets route 0.0.0.0/0 to an internet gateway. Private subnets do not
+- **Route tables**: Each subnet is associated with one route table
+- **NAT Gateway**: About $45/month plus data processing, required for internet egress from private subnets
+- **Private subnet routing**: A missing default route to the NAT gateway leaves the subnet with no internet path
+- **S3 endpoints**: Gateway endpoints keep S3 traffic on the AWS network
+`,
+                tags: ['#aws', '#vpc', '#networking']
             },
             {
-                name: 'serverless-first-steps.md',
+                name: 'serverless.md',
                 date: '2025-09-02',
-                preview: 'My first Lambda function deployment! The serverless world is fascinating but also intimidating...',
-                content: `# My First Serverless Adventure
+                preview: 'Node.js Lambda lists Markdown objects in S3 and writes a metadata file. Runtime Node.js 18, 256 MB, 30 second timeout.',
+                content: `# Lambda metadata function
 
 *September 2, 2025*
 
-## The Serverless Learning Curve
+## Behavior
 
-Wow, serverless is a completely different mindset! Coming from traditional server management, this feels like magic - but expensive magic if you're not careful.
+The function runs when a Markdown object is uploaded to S3:
+- Read the bucket and key from the S3 event
+- Process the object
+- Write a metadata file
 
-### What I Built Today
+## Runtime
 
-I created my first Lambda function that processes log files automatically. The idea is simple but powerful:
-- When I upload a new learning log to S3
-- Lambda automatically processes it
-- Updates my learning index
+- **Pricing**: Duration and memory, billed per invocation
+- **Scaling**: Concurrent executions scale with incoming events
+- **Cold start**: First request after idle can take up to 10 seconds
+- **Memory**: Configured memory, up to 10 GB
+- **Timeout**: Maximum 15 minutes
+- **Debugging**: CloudWatch Logs; there is no host to SSH to
 
-### The "Magic" Moment
-
-Watching my function trigger automatically when I uploaded a file was incredible. No servers to manage, no infrastructure to worry about - just code that runs when needed.
-
-### Lessons Learned
-
-**The Good:**
-- **Pay-per-use pricing** - Only pay when your code actually runs
-- **Automatic scaling** - Handles traffic spikes without thinking about it
-- **No server management** - Focus on code, not infrastructure
-
-**The Challenges:**
-- **Cold starts** - First request can be slow (up to 10 seconds!)
-- **Memory limits** - Only 10GB max, had to optimize my code
-- **Timeout limits** - 15 minutes max execution time
-- **Debugging is harder** - Can't just SSH into a server
-
-### Code I Wrote
+## Handler
 
 \`\`\`javascript
 exports.handler = async (event) => {
-    // Process the uploaded log file
     const bucket = event.Records[0].s3.bucket.name;
     const key = event.Records[0].s3.object.key;
-    
+
     console.log('Processing:', key);
-    // ... rest of the processing logic
 };
 \`\`\`
 
-### What Surprised Me
+## Access
 
-- **Event-driven architecture** is actually pretty elegant once you get it
-- **Environment variables** are much easier to manage than I thought
-- **IAM roles** are crucial - spent 2 hours debugging permissions!
-
-### Next Steps
-
-- Learn about EventBridge for more complex event routing
-- Experiment with different Lambda runtimes
-- Figure out how to handle errors gracefully
-
-*Serverless is definitely the future, but it requires a different way of thinking!*`,
-                tags: ['#learning', '#serverless', '#lambda', '#automation']
+- The execution role needs s3:GetObject and s3:PutObject on the log bucket
+- Bucket name and region are environment variables
+- A missing s3:ListBucket or object permission returns AccessDenied
+`,
+                tags: ['#serverless', '#lambda', '#automation']
             },
             {
                 name: 'frontend-deployment-joy.md',
                 date: '2025-09-03',
-                preview: 'Deployed my first frontend to AWS Amplify! The CI/CD pipeline is like having a personal DevOps engineer...',
-                content: `# Frontend Deployment Made Simple
+                preview: 'Static HTML, CSS, and JavaScript hosted on Amplify, served through CloudFront with TLS from ACM.',
+                content: `# Amplify static hosting
 
 *September 3, 2025*
 
-## From Localhost to Production
+## Deploy
 
-Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed at how smooth the process was. Coming from manual FTP uploads, this feels like magic.
+1. Edit the terminal files
+2. \`git push origin main\`
+3. Amplify builds from the connected repository
+4. The site is served from the CloudFront distribution, typically within a few minutes
 
-### The Amplify Experience
+## Hosting
 
-**What I Love:**
-- **Git-based deployment** - Push to GitHub, automatically deploys
-- **Built-in CI/CD** - No need to set up Jenkins or GitHub Actions
-- **Custom domains** - Easy SSL certificate management
-- **Performance optimization** - Automatic image optimization and compression
+- Git push on the connected branch starts a build
+- Each deployment is a separate Amplify job
+- CloudFront is the CDN
+- TLS certificate is issued through AWS Certificate Manager
+- **Framework**: HTML, CSS, and JavaScript, no application build
+- **Custom domain**: terminal.1percentnerd.com
 
-### My Deployment Workflow
+## Build and cache
 
-1. **Code locally** - Make changes to my terminal interface
-2. **Commit and push** - \`git push origin main\`
-3. **Watch the magic** - Amplify automatically builds and deploys
-4. **Test in production** - Usually live within 2-3 minutes
-
-### What I Learned About Frontend Hosting
-
-**Before Amplify:**
-- Manual file uploads via FTP
-- No version control for deployments
-- Manual SSL certificate management
-- No performance optimization
-
-**With Amplify:**
-- Everything is automated
-- Every deployment is tracked
-- Built-in CDN for global performance
-- Automatic HTTPS
-
-### The Technical Details
-
-- **Framework**: Plain HTML/CSS/JavaScript (no build process needed)
-- **Custom Domain**: terminal.1percentnerd.com
-- **CDN**: CloudFront distribution included
-- **SSL**: Automatic certificate from AWS Certificate Manager
-
-### Challenges I Overcame
-
-- **Build failures** - Had to learn about build specifications
-- **Environment variables** - Took time to understand how to pass them
-- **Caching issues** - Learned about cache invalidation strategies
-
-### Performance Wins
-
-- **Page load time**: Under 2 seconds globally
-- **Image optimization**: Automatic WebP conversion
-- **Code splitting**: Automatic JavaScript bundling
-- **Compression**: Gzip enabled by default
-
-### What's Next
-
-- Set up staging environment for testing
-- Learn about Amplify's authentication features
-- Experiment with server-side rendering
-
-*This is exactly how modern web development should feel - simple, fast, and reliable!*`,
-                tags: ['#learning', '#frontend', '#deployment', '#amplify']
+- The build spec is amplify.yml
+- Environment variables are set on the Amplify app, not in the repository
+- CloudFront caches static assets until an invalidation or a TTL expiry
+- Gzip is enabled
+- Recorded page load is under 2 seconds
+`,
+                tags: ['#frontend', '#deployment', '#amplify']
             }
         ];
 
@@ -1450,12 +1169,7 @@ Today I deployed my terminal portfolio to AWS Amplify, and I'm honestly amazed a
             
             // Get icon based on log type
             const getLogIcon = (tags) => {
-                if (tags.includes('#aws')) return '☁️';
-                if (tags.includes('#lambda')) return '⚡';
-                if (tags.includes('#amplify')) return '🚀';
-                if (tags.includes('#security')) return '🔒';
-                if (tags.includes('#networking')) return '🌐';
-                return '📝';
+                return '';
             };
             
             logItem.innerHTML = `
